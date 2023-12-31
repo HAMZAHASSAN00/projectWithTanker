@@ -26,7 +26,40 @@ class _LoginFormState extends State<LoginForm> {
   Future loginLogic() async {
     try {
       FocusScope.of(context).unfocus();
-
+////////verified
+//       await FirebaseAuth.instance.signInWithEmailAndPassword(
+//         email: _emailController.text.trim(),
+//         password: _passwordController.text.trim(),
+//       ).then((value) async {
+//         final QuerySnapshot userQuery = await FirebaseFirestore.instance.
+//         collection('Users').where('email', isEqualTo:  _emailController.text.trim()).get();
+//         //just tell me if the user is exsit or not
+//
+//         if ( userQuery.docs.isEmpty && _selectedUserType==UserType.TankerUser&& FirebaseAuth.instance.currentUser!.emailVerified) {
+//           Navigator.of(context).pushNamed('TankerSystemPage');
+//           CacheHelper.saveData(key: 'Credential', value: 'TankerSystemPage');
+//         } else if(userQuery.docs.isNotEmpty && _selectedUserType==UserType.SimpleUser && FirebaseAuth.instance.currentUser!.emailVerified) {
+//           Navigator.of(context).pushNamed('Onboarding');
+//           CacheHelper.saveData(key: 'Credential', value: 'SimpleUser');
+//
+//         }else if (!FirebaseAuth.instance.currentUser!.emailVerified){
+//           AwesomeDialog(
+//             context: context,
+//             dialogType: DialogType.info,
+//             animType: AnimType.rightSlide,
+//             title: 'Verification',
+//             desc: 'check your email to Verification',
+//           ).show();
+//
+//         }else{
+//           AwesomeDialog(
+//             context: context,
+//             dialogType: DialogType.error,
+//             animType: AnimType.rightSlide,
+//             title: 'Error',
+//             desc: 'Login failed. Please check your user type.',
+//           ).show();
+/////////////////////////////////////
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
@@ -35,21 +68,12 @@ class _LoginFormState extends State<LoginForm> {
         collection('Users').where('email', isEqualTo:  _emailController.text.trim()).get();
         //just tell me if the user is exsit or not
 
-        if ( userQuery.docs.isEmpty && _selectedUserType==UserType.TankerUser&& FirebaseAuth.instance.currentUser!.emailVerified) {
+        if ( userQuery.docs.isEmpty && _selectedUserType==UserType.TankerUser) {
           Navigator.of(context).pushNamed('TankerSystemPage');
           CacheHelper.saveData(key: 'Credential', value: 'TankerSystemPage');
-        } else if(userQuery.docs.isNotEmpty && _selectedUserType==UserType.SimpleUser && FirebaseAuth.instance.currentUser!.emailVerified) {
+        } else if(userQuery.docs.isNotEmpty && _selectedUserType==UserType.SimpleUser ) {
           Navigator.of(context).pushNamed('Onboarding');
           CacheHelper.saveData(key: 'Credential', value: 'SimpleUser');
-
-        }else if (!FirebaseAuth.instance.currentUser!.emailVerified){
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.info,
-            animType: AnimType.rightSlide,
-            title: 'Verification',
-            desc: 'check your email to Verification',
-          ).show();
 
         }else{
           AwesomeDialog(
@@ -59,8 +83,6 @@ class _LoginFormState extends State<LoginForm> {
             title: 'Error',
             desc: 'Login failed. Please check your user type.',
           ).show();
-
-
         }
       });
     } catch (e) {

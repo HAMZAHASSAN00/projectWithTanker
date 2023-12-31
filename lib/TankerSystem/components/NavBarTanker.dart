@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth/components/designUI.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import '../../../model/TankerModel.dart';
-import '../../../repo/Tanker_repositry.dart';
-import '../../Welcome/welcome_screen.dart';
+import '../../model/TankerModel.dart';
+import '../../repo/Tanker_repositry.dart';
+import '../../Screens/Welcome/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
-class NavBar extends StatelessWidget {
-  const NavBar({Key? key}) : super(key: key);
+class NavBarTanker extends StatelessWidget {
+  const NavBarTanker({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,6 @@ class NavBar extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error} hiiiiiii');
           } else {
-
             Map<String, dynamic> tankerData = snapshot.data!;
             print('tnaker data ${tankerData}');
             TankerModel tankerModel = TankerModel(
@@ -41,7 +40,7 @@ class NavBar extends StatelessWidget {
                   currentAccountPicture: Hero(
                     tag: 'userImage',
                     child: CircleAvatar(
-                      backgroundColor: Color(0xFFFFFFFF),
+                      backgroundColor: TankerPageColorDark,
                       child: ClipOval(
                         child: Lottie.network(
                           "https://lottie.host/dab72ada-5a3c-4e75-bdce-54e9168de214/SS7K24yqSc.json",
@@ -51,8 +50,7 @@ class NavBar extends StatelessWidget {
                     ),
                   ),
                   decoration: BoxDecoration(
-                    color: Color(0xFFD9E4FA),
-                  ),
+                    color: TankerPageColor,                  ),
                 ),
                 ListTile(
                   leading: Icon(LineAwesomeIcons.person_entering_booth),
@@ -66,7 +64,7 @@ class NavBar extends StatelessWidget {
                   leading: Icon(Icons.notifications),
                   title: Text('notifications'),
                   onTap: () {
-                    Navigator.of(context).pushNamed('NotificationPage');
+                    Navigator.of(context).pushNamed('NotificationPageTanker');
                   },
                   trailing: ClipOval(
                     child: Container(
@@ -86,14 +84,7 @@ class NavBar extends StatelessWidget {
                   ),
                 ),
 
-                ListTile(
-                  leading: Icon(Icons.dark_mode),
-                  title: Text('theme'),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('ThemePage');
-                    // Add your logic for "How the System Works"
-                  },
-                ),
+
                 ListTile(
                   leading: Icon(Icons.settings),
                   title: Text('Settings'),

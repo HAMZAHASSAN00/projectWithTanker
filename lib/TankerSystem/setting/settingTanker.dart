@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/repo/user_repositry.dart';
 import '../../components/designUI.dart';
 import '../../model/UserModel.dart';
 import '../../repo/Tanker_repositry.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPageTanker extends StatefulWidget {
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  _SettingsPageTankerState createState() => _SettingsPageTankerState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageTankerState extends State<SettingsPageTanker> {
   bool notificationEnabled = true;
   bool darkModeEnabled = false;
   double textSize = 16.0;
@@ -23,7 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: perfictBlue,
       appBar: customAppBar(context, 'Setting'),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: UserRepository().getData(),
+        future: TankerRepository().getDataTanker(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -72,15 +71,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: Text('Rest password'),
                       onTap: () {
                         Navigator.of(context).pushNamed('PasswordResetPage');
-                      },
-                    ),
-                  ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Edit your data'),
-                      onTap: () {
-                        Navigator.of(context).pushNamed('EditYourDataPage');
                       },
                     ),
                   ),

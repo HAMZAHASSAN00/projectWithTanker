@@ -61,13 +61,13 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (isTurnedOnSolar)
+                        if (userData['isTurnedOnSolar'])
                           Lottie.network(
                             'https://lottie.host/5064be26-9728-468f-a3ae-6d78ad7db05f/R0Or7FxaP5.json',
                             width: 100,
                             height: 100,
                           ),
-                        if (!isTurnedOnSolar)
+                        if (!userData['isTurnedOnSolar'])
                           Lottie.network(
                             'https://lottie.host/6bea2814-2d68-4ec6-befa-14883ef430df/JpTR9TEEZd.json',
                           ),
@@ -84,7 +84,6 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                                       ? null
                                       : (value) {
                                     setState(() {
-                                      isTurnedOnSolar = value;
                                       userData['isTurnedOnSolar'] =
                                           value;
                                       print(userData['uID']);
@@ -109,7 +108,7 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
 
                         SizedBox(height: 20),
                         Text(
-                          isTurnedOnSolar
+                          userData['isTurnedOnSolar']
                               ? 'Electrical heater is ON'
                               : 'You are using The Solar Cells ',
                           style: TextStyle(

@@ -1,5 +1,7 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/components/designUI.dart';
 import 'package:flutter_auth/newFeature/profileUI/widgets/profile_list_item.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -8,23 +10,6 @@ import '../../Screens/Welcome/welcome_screen.dart';
 import '../../model/UserModel.dart';
 import '../../network/local/cache_helper.dart';
 
-
-// class MyApp extends StatelessWidget {
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Builder(
-//         builder: (context) {
-//           return MaterialApp(
-//             debugShowCheckedModeBanner: false,
-//             home: ProfileScreen(),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
 
 class ProfileScreen extends StatelessWidget {
 
@@ -52,13 +37,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // CircleAvatar(
-                //   radius: 50,
-                //   backgroundImage: Lottie.network(
-                //     "https://lottie.host/dab72ada-5a3c-4e75-bdce-54e9168de214/SS7K24yqSc.json",
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
+
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
@@ -123,42 +102,35 @@ class ProfileScreen extends StatelessWidget {
                     children: <Widget>[
                       ProfileListItem(
                         icon: LineAwesomeIcons.user_shield,
-                        text: 'Privacy',
+                        text: 'Edit your data',
                         onTap: () {
                           // Handle the press event here
-                          print('Profile item pressed!');
-                        },
-                      ),
-                      ProfileListItem(
-                        icon: LineAwesomeIcons.history,
-                        text: 'Purchase History',
-                        onTap: () {
-                          // Handle the press event here
+                          Navigator.of(context).pushNamed('EditYourDataPage');
                           print('Profile item pressed!');
                         },
                       ),
                       ProfileListItem(
                         icon: LineAwesomeIcons.question_circle,
-                        text: 'Help & Support',
+                        text: 'About Us',
                         onTap: () {
-                          // Handle the press event here
-                          print('Profile item pressed!');
+                          Navigator.of(context).pushNamed('AboutUsPage');
+
                         },
                       ),
                       ProfileListItem(
                         icon: LineAwesomeIcons.cog,
                         text: 'Settings',
                         onTap: () {
-                          // Handle the press event here
-                          print('Profile item pressed!');
+                          Navigator.of(context).pushNamed('SettingsPage');
                         },
                       ),
                       ProfileListItem(
-                        icon: LineAwesomeIcons.user_plus,
-                        text: 'Invite a Friend',
+                        icon: LineAwesomeIcons.wired_network,
+                        text: 'How the System work',
                         onTap: () {
-                          // Handle the press event here
-                          print('Profile item pressed!');
+                          Navigator.of(context).pushNamed('HowItWorksPage');
+
+
                         },
                       ),
                       ProfileListItem(
@@ -166,36 +138,30 @@ class ProfileScreen extends StatelessWidget {
                         text: 'Logout',
                         hasNavigation: false,
                         onTap: () {
-                          showDialog(
+                          AwesomeDialog(
+
+                            dialogType: DialogType.warning,
                             context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("logout"),
-                                content: Text("Are you sure you want to logout?"),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      FirebaseAuth.instance.signOut();
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => WelcomeScreen(),
-                                        ),
-                                      );
-                                    },
-                                    child: Text("logout"),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("Close"),
-                                  ),
-                                ],
-                              );
+                            btnCancelText: "Cancel", // Text for the cancel button
+                            btnCancelOnPress: () {
+                              Navigator.of(context).pop(); // Close the dialog without logging out
                             },
-                          );
+                            title: 'Logout',
+                            btnCancelColor: Colors.grey,
+                            btnOkColor: Colors.red,
+                            dialogBackgroundColor: perfictBlue,
+                            body: Text('Are you sure you want to logout ?'),
+                            btnOkText: "Logout", // Text for the logout button
+                            btnOkOnPress: () {
+                              // Add your logout logic here
+
+                              FirebaseAuth.instance.signOut();
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                  builder: (context) => WelcomeScreen()));                            },
+                          ).show();
+
                         },
                       ),
                     ],

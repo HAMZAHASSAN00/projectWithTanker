@@ -1,153 +1,4 @@
 
-// class NavBar extends StatelessWidget {
-//   const NavBar({Key? key}) : super(key: key);
-//
-//
-//   void _showDialog(BuildContext context, String title, String content) {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text(title),
-//           content: Text(content),
-//           actions: <Widget>[
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: Text("Close"),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final user=FirebaseAuth.instance.currentUser!;
-//     return Drawer(
-//       child: ListView(
-//         padding: EdgeInsets.zero,
-//         children: [
-//           UserAccountsDrawerHeader(
-//             accountName: Text("Hamza"),
-//             accountEmail: Text(user.uid!,),
-//             currentAccountPicture: CircleAvatar(
-//               child: ClipOval(
-//                 child: Image.asset(
-//                   "assets/images/waterBackground.jpg",
-//                   width: 90,
-//                   height: 90,
-//                   fit: BoxFit.cover,
-//                 ),
-//               ),
-//             ),
-//             decoration: BoxDecoration(
-//               color: Colors.blue,
-//               image: DecorationImage(
-//                   fit: BoxFit.fill,
-//                   image: NetworkImage(
-//                       'https://oflutter.com/wp-content/uploads/2021/02/profile-bg3.jpg')),
-//             ),
-//           ),
-//           ListTile(
-//             leading: Icon(Icons.info),
-//             title: Text('How the System Works'),
-//             onTap: () {
-//               Navigator.pop(context); // Close the drawer
-//               _showDialog(context, 'How the System Works',
-//                   'Description of how the system works.');
-//             },
-//           ),
-//           ListTile(
-//             leading: Icon(Icons.settings),
-//             title: Text('Settings'),
-//             onTap: () {
-//               Navigator.pop(context); // Close the drawer
-//               // Implement "Settings" action here
-//               // Navigate to the settings page or show a settings dialog
-//             },
-//           ),
-//           ListTile(
-//             leading: Icon(Icons.people),
-//             title: Text('About Us'),
-//             onTap: () {
-//               Navigator.pop(context); // Close the drawer
-//               _showDialog(context, 'About Us',
-//                   'Description of your team or organization.');
-//             },
-//           ),
-//           ListTile(
-//             leading: Icon(Icons.notifications),
-//             title: Text('notifications'),
-//             onTap: () {
-//
-//             },
-//             trailing: ClipOval(
-//               child: Container(
-//                 color: Colors.red,
-//                 width: 20,
-//                 height: 20,
-//                 child: Center(
-//                   child: Text(
-//                     '8',
-//                     style: TextStyle(
-//                       color: Colors.white,
-//                       fontSize: 12,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           ListTile(
-//             leading: Icon(Icons.exit_to_app),
-//             title: Text('logout'),
-//             onTap: () {
-//               Navigator.pop(context);
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   return AlertDialog(
-//                     title: Text("logout"),
-//                     content: Text("Are you sure you want to logout?"),
-//                     actions: <Widget>[
-//                       TextButton(
-//                         onPressed: () {
-//                           //close the showDialog
-//                           Navigator.of(context).pop();
-//                           //logout form firebase
-//                           FirebaseAuth.instance.signOut();
-//                           //logout form system
-//                           Navigator.pushReplacement(
-//                             context,
-//                             MaterialPageRoute(
-//                               builder: (context) => WelcomeScreen(),
-//                             ),
-//                           );
-//                         },
-//                         child: Text("logout"),
-//                       ),
-//                       TextButton(
-//                         onPressed: () {
-//                           Navigator.of(context).pop();
-//                         },
-//                         child: Text("Close"),
-//                       ),
-//                     ],
-//                   );
-//                   ;
-//                 },
-//               );// Close the drawer
-//             },
-//
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/components/designUI.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -218,7 +69,10 @@ class NavBar extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.notifications),
+                  leading: Hero(
+
+                      tag: 'hero_noti',
+                      child: Icon(Icons.notifications)),
                   title: Text('notifications'),
                   onTap: () {
                     Navigator.of(context).pushNamed('NotificationPage');
@@ -230,7 +84,7 @@ class NavBar extends StatelessWidget {
                       height: 20,
                       child: Center(
                         child: Text(
-                          '8',
+                          '${CacheHelper.getAllNotifications().length}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -242,19 +96,19 @@ class NavBar extends StatelessWidget {
                 ),
 
                 ListTile(
-                  leading: Icon(Icons.dark_mode),
-                  title: Text('theme'),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('ThemePage');
-                    // Add your logic for "How the System Works"
-                  },
-                ),
-                ListTile(
                   leading: Icon(Icons.settings),
                   title: Text('Settings'),
                   onTap: () {
                     Navigator.of(context).pushNamed('SettingsPage');
 
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.water_drop_rounded),
+                  title: Text('Ask For Tanker'),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('AskForTanker');
+                    // Add your logic for "How the System Works"
                   },
                 ),
                 ListTile(
@@ -306,6 +160,7 @@ class NavBar extends StatelessWidget {
                               onPressedAction1: () {
                                 Navigator.of(context).pop();
                                 FirebaseAuth.instance.signOut();
+                                CacheHelper.removeAllNotifications();
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(

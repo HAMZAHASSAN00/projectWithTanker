@@ -2,47 +2,98 @@ import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../components/designUI.dart';
-import '../../../network/local/cache_helper.dart';
-import '../components/NavBar.dart';
+import '../../components/designUI.dart';
+import '../../network/local/cache_helper.dart';
 
+class NotificationPageTanker extends StatefulWidget {
+  final List<String> notifications;
 
-class TankerSystemPage extends StatefulWidget {
-
-
+  NotificationPageTanker({required this.notifications});
 
   @override
-  _TankerSystemPageState createState() => _TankerSystemPageState();
+  _NotificationPageTankerState createState() => _NotificationPageTankerState();
 }
 
-class _TankerSystemPageState extends State<TankerSystemPage> {
+class _NotificationPageTankerState extends State<NotificationPageTanker> {
   late List<bool> readStatus;
   late SharedPreferences prefs;
-  final List<String> notifications=['tanker1'];
+
   @override
   void initState() {
     super.initState();
     _initializeReadStatus();
+    _configureOneSignal();
   }
 
+  // ...
+  void _configureOneSignal() {
+    //    OneSignal.Notifications.addClickListener((event) {
+    //      String message = event.notification.body ?? "";
+    //   setState(() {
+    //     widget.notifications.insert(0, message); // Add to the beginning of the list
+    //     readStatus.insert(0, false); // Set initial read status to false
+    //     _saveReadStatus();
+    //   });
+    //
+    // });
+    OneSignal.Notifications.addClickListener((event) {
+      CacheHelper.saveNotification(
+        key: 'notification_${event.notification.notificationId}',
+        notificationMessage: '${event.notification.body}',
+      );
+      //herer
+      Navigator.of(context).pushNamed('NotificationPage');
 
+      print("body is indedededed main: ${event.notification.body}");
+    });
+      OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+        String message = event.notification.body ?? "";
+        setState(() {
+          widget.notifications.insert(0, message); // Add to the beginning of the list
+          readStatus.insert(0, false); // Set initial read status to false
+          _saveReadStatus();
+        });
+        // _showNotificationDialog(context, message);
+        print("body is indedededed notifi: ${event.notification.body}");
+      });
+  }
+
+  // void _configureOneSignal() {
+  //   OneSignal.Notifications.addClickListener(
+  //           (event) {
+  //         print("all events: $event");
+  //         print("body is: ${event.notification.body}");
+  //       });
+  //   OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+  //     String message = event.notification.body ?? "";
+  //     _showNotificationDialog(context, message);
+  //     print("body is indedededed: ${event.notification.body}");
+  //   });
+  // }
 
   _initializeReadStatus() async {
     prefs = await SharedPreferences.getInstance();
 
     // Initialize the read status list from SharedPreferences
-    readStatus = List.generate(notifications.length, (index) {
+    readStatus = List.generate(widget.notifications.length, (index) {
       return prefs.getBool('readStatus_$index') ?? false;
     });
 
     setState(() {
-
+      List<String> allNotifications = CacheHelper.getAllNotifications();
+      print('all noti : ${allNotifications}');
+      for (String notification in allNotifications) {
+        widget.notifications.insert(0, notification); // Add to the beginning of the list
+        readStatus.insert(0, false); // Set initial read status to false
+        _saveReadStatus();
+        //print('Notification: $notification');
+      }
     });
   }
 
   _saveReadStatus() {
     // Save the read status list to SharedPreferences
-    for (int i = 0; i < notifications.length; i++) {
+    for (int i = 0; i < widget.notifications.length; i++) {
       prefs.setBool('readStatus_$i', readStatus[i]);
     }
   }
@@ -56,8 +107,7 @@ class _TankerSystemPageState extends State<TankerSystemPage> {
 
     return Scaffold(
       backgroundColor: perfictBlue,
-      appBar: customAppBar(context,'TANKER'),
-      drawer: NavBar(),
+      appBar: customAppBar(context,'Notifications'),
       body: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -65,7 +115,7 @@ class _TankerSystemPageState extends State<TankerSystemPage> {
           children: [
             Center(
               child: Icon(
-                Icons.propane_tank,
+                Icons.notifications,
                 size: 50.0,
                 color: Colors.blueAccent,
               ),
@@ -73,7 +123,7 @@ class _TankerSystemPageState extends State<TankerSystemPage> {
             SizedBox(height: 16.0),
             Center(
               child: Text(
-                'tanker request',
+                'Recent Notifications',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
@@ -84,13 +134,13 @@ class _TankerSystemPageState extends State<TankerSystemPage> {
             SizedBox(height: 16.0),
             Expanded(
               child: ListView.builder(
-                itemCount: notifications.length,
+                itemCount: widget.notifications.length,
                 itemBuilder: (context, index) {
                   return Dismissible(
-                    key: Key(notifications[index]),
+                    key: Key(widget.notifications[index]),
                     onDismissed: (direction) {
                       setState(() {
-                        notifications.removeAt(index);
+                        widget.notifications.removeAt(index);
                         readStatus.removeAt(index);
                         _saveReadStatus();
                       });
@@ -106,7 +156,8 @@ class _TankerSystemPageState extends State<TankerSystemPage> {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        _showNotificationDialogTanker(context,'hamza','4564654645654');
+                        _showNotificationDialog(
+                            context, widget.notifications[index]);
                         setState(() {
                           // Mark the notification as read when tapped
                           readStatus[index] = true;
@@ -119,7 +170,7 @@ class _TankerSystemPageState extends State<TankerSystemPage> {
                         color:Colors.white,
                         child: ListTile(
                           title: Text(
-                           notifications[index],
+                            widget.notifications[index],
                             style: TextStyle(fontSize: 18.0),
                           ),
                           leading: Icon(
@@ -140,36 +191,15 @@ class _TankerSystemPageState extends State<TankerSystemPage> {
       ),
     );
   }
-  String tankerMessage(String username, String phoneNumber) {
-    String message = 'From : $username,\n\n';
-    message += 'A tanker request has been made for phone number $phoneNumber. ';
-    message += 'Please review and respond accordingly.';
 
-    return message;
-  }
-
-
-  void _showNotificationDialogTanker(BuildContext context, String username, String phoneNumber) {
+  void _showNotificationDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('tanker request'),
-          content: Text(tankerMessage(username, phoneNumber)),
+          title: Text('Notification'),
+          content: Text(message),
           actions: [
-
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('accept'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('regect'),
-            ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);

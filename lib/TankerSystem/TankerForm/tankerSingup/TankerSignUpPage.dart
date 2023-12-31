@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Signup/components/TankerForm/tankerSingup/signup_from_tanker.dart';
+import 'package:flutter_auth/TankerSystem/TankerForm/tankerSingup/signup_from_tanker.dart';
 import 'package:flutter_auth/constants.dart';
 import 'package:flutter_auth/responsive.dart';
 
 import '../../../../../components/background.dart';
-import '../../UserForm/sign_up_top_image.dart';
-import '../../UserForm/signup_form.dart';
+import '../../../Screens/Signup/components/UserForm/sign_up_top_image.dart';
 
 
 class TankerSignUpPage extends StatelessWidget {

@@ -28,8 +28,37 @@ AppBar customAppBar(BuildContext context,title) {
     ],
   );
 }
-
+AppBar customAppBarTanker(BuildContext context,title) {
+  return AppBar(
+    backgroundColor: TankerPageColor,
+    elevation: 5,
+    title: Text(
+      title,
+      style: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    actions: [
+      IconButton(
+        icon: Icon(Icons.notifications),
+        onPressed: () {
+          // Handle notifications button press
+          Navigator.of(context).pushNamed('NotificationPageTanker');
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.settings),
+        onPressed: () {
+          Navigator.of(context).pushNamed('SettingsPageTanker');
+        },
+      ),
+    ],
+  );
+}
 Color perfictBlue=Color(0xFFBAD3FF);
+Color TankerPageColor=Color(0xFFC79EF6);
+Color TankerPageColorDark=Color(0xFF8F44FC);
 AlertDialog dialog=   AlertDialog(
   title: Text("Logout"),
   content: Text("Are you sure you want to logout?"),

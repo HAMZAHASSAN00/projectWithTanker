@@ -28,7 +28,7 @@ class UserRepository {
      ).show();
    }
   }
-  Future registerUser(BuildContext context,_nameController, _emailController, TankModel tankModel) async {
+  Future registerUser(BuildContext context,_nameController, _emailController, TankModel tankModel, _phoneController, double longitude,double latitude) async {
 
       final user = UserModel(
         name: _nameController.text.trim(),
@@ -44,10 +44,22 @@ class UserRepository {
         height: tankModel.height,//CacheHelper.getTankModel(key: 'TankModel')!.height ?? 20,
         width: tankModel.width,//CacheHelper.getTankModel(key: 'TankModel')!.width ?? 30,
         length: tankModel.length,//CacheHelper.getTankModel(key: 'TankModel')!.width ?? 30,
-        waterTemp:0.0,
-        CurrentBills:0.0,
+        waterTemp:50.1,
+        currentBills:0.1,
         isAutomaticModeSolar:false,
-
+        userType: 'defaultUserType',
+        roofAutoMode: 20.1,
+        groundAutoMode: 20.1,
+        tempPercentageAutoMode: 50.1,
+        phoneNumber: _phoneController.text.trim(),
+        waterTimeArrival: '',
+        oneSignalId: null,
+        so1: '',
+        so2: '',
+        do1: 0.1,
+        do2: 0.1,
+        longitude: longitude ??0.1,
+        latitude: latitude ?? 0.1,
       );
       // If createUserWithEmailAndPassword is successful, proceed to create the user in Firestore
       createUser(context, user);
@@ -67,10 +79,19 @@ class UserRepository {
 
 
   }
-  Future signUp(BuildContext context,_nameController, _emailController, _passwordController, TankModel tankModel) async {
+  Future signUp(
+      BuildContext context,
+      _nameController,
+      _emailController,
+      _passwordController,
+      TankModel tankModel,
+      _phoneController,
+      double longitude,
+      double latitude,
+  ) async {
     try {
       createAuthWithEmailAndPassword(context,_emailController,_passwordController ).then((value){
-        registerUser(context,_nameController, _emailController,  tankModel);
+        registerUser(context,_nameController, _emailController,  tankModel,_phoneController,longitude,latitude);
       });
 
     } catch (error) {
@@ -86,50 +107,7 @@ class UserRepository {
     }
   }
 
-  // Future signUp(BuildContext context,_nameController, _emailController, _passwordController, TankModel tankModel) async {
-  //   try {
-  //
-  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: _emailController.text.trim(),
-  //       password: _passwordController.text.trim(),
-  //     ).then((value) {
-  //       final user = UserModel(
-  //         name: _nameController.text.trim(),
-  //         email: _emailController.text.trim(),
-  //         tank: Tank(
-  //           cmRoof: '0',
-  //           cmGround: '0',
-  //         ),
-  //         isAutomaticMode: false,
-  //         isTurnedOnSolar: false,
-  //         isTurnedOnTank: false,
-  //         tankName:tankModel.tankName,//CacheHelper.getTankModel(key: 'TankModel')!.tankName ?? 'Default',
-  //         height: tankModel.height,//CacheHelper.getTankModel(key: 'TankModel')!.height ?? 20,
-  //         width: tankModel.width,//CacheHelper.getTankModel(key: 'TankModel')!.width ?? 30,
-  //         length: tankModel.length,//CacheHelper.getTankModel(key: 'TankModel')!.width ?? 30,
-  //         waterTemp:0.0,
-  //         CurrentBills:0.0,
-  //         isAutomaticModeSolar:false,
-  //
-  //       );
-  //       // If createUserWithEmailAndPassword is successful, proceed to create the user in Firestore
-  //       createUser(context, user);
-  //       // Additional logic or navigation if needed after both operations
-  //       Navigator.of(context).pushNamed('loginScreen');
-  //     } );
-  //
-  //   } catch (error) {
-  //     print('Error creating user: $error');
-  //
-  //     // Handle error and show error message
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('The email address is already used. Please try again.'),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   }
-  // }
+
 
   Future<void> createUser(BuildContext context, UserModel user) async {
     try {
@@ -144,7 +122,7 @@ class UserRepository {
         animType: AnimType.rightSlide,
         title: 'Error',
         desc: 'Something wrong. Try again.',
-      );
+      ).show();
       // Show error snackbar
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(
@@ -172,9 +150,20 @@ class UserRepository {
       'width': userDoc.get('width'),
       'length': userDoc.get('length'),
 
+
       'waterTemp': userDoc.get('waterTemp'),
-      'CurrentBills': userDoc.get('CurrentBills'),
+      'currentBills': userDoc.get('currentBills'),
       'isAutomaticModeSolar': userDoc.get('isAutomaticModeSolar'),
+      'userType': userDoc.get('userType'),
+      'roofAutoMode': userDoc.get('roofAutoMode'),
+      'groundAutoMode': userDoc.get('groundAutoMode'),
+      'tempPercentageAutoMode': userDoc.get('tempPercentageAutoMode'),
+      'phoneNumber':userDoc.get('phoneNumber') ,
+      'waterTimeArrival': userDoc.get('waterTimeArrival'),
+      'oneSignalId':userDoc.get('oneSignalId'),
+      'phoneNumber':userDoc.get('phoneNumber'),
+      'longitude':userDoc.get('longitude'),
+          'latitude':userDoc.get('latitude'),
 
     };
 
@@ -185,7 +174,7 @@ class UserRepository {
 
     userData['cmRoof'] = cmRoof;
     userData['cmGround'] = cmGround;
-
+    updateOneSignalUserPushSubscriptionId(user!.email.toString());
     return userData;
   }
   Text getImportantDataText(Map<String, dynamic> userData) {
@@ -206,11 +195,15 @@ class UserRepository {
         textAlign: TextAlign.center,);
     }
   }
+  void updateOneSignalUserPushSubscriptionId(email){
+    print('updateOneSignalUserPushSubscriptionId ${OneSignal.User.pushSubscription.id}');
+    updateFirestoreData('oneSignalId', OneSignal.User.pushSubscription.id, 'Users', email);
+  }
+
   Future<Stream<Map<String, dynamic>>> getDataStream() async{
     User? user = FirebaseAuth.instance.currentUser;
     print('form getDataStream() : ${OneSignal.User.pushSubscription.id}');
     DocumentReference userDocRef = await FirebaseFirestore.instance.collection('Users').doc(user!.email);
-
     // Use snapshots to listen for changes in the document
     return userDocRef.snapshots().map((userDoc) {
       Map<String, dynamic> userData = {
@@ -219,14 +212,21 @@ class UserRepository {
         'isAutomaticMode': userDoc.get('isAutomaticMode'),
         'isTurnedOnSolar': userDoc.get('isTurnedOnSolar'),
         'isTurnedOnTank': userDoc.get('isTurnedOnTank'),
-
         'height': userDoc.get('height'),
         'width': userDoc.get('width'),
         'length': userDoc.get('length'),
 
-        'waterTemp': userDoc.get('waterTemp'),
-        'CurrentBills': userDoc.get('CurrentBills'),
         'isAutomaticModeSolar': userDoc.get('isAutomaticModeSolar'),
+        'waterTemp': userDoc.get('waterTemp'),
+        'currentBills': userDoc.get('currentBills'),
+        'userType': userDoc.get('userType'),
+        'roofAutoMode': userDoc.get('roofAutoMode'),
+        'groundAutoMode': userDoc.get('groundAutoMode'),
+        'tempPercentageAutoMode': userDoc.get('tempPercentageAutoMode'),
+        'waterTimeArrival': userDoc.get('waterTimeArrival'),
+        'oneSignalId':userDoc.get('oneSignalId'),
+        'phoneNumber':userDoc.get('phoneNumber'),
+
       };
 
       Map<String, dynamic> tankData = userDoc.get('tank') ?? {};
@@ -236,6 +236,7 @@ class UserRepository {
       userData['cmRoof'] = cmRoof;
       userData['cmGround'] = cmGround;
       print('form getDataStream() : ${OneSignal.User.pushSubscription.id}');
+      updateOneSignalUserPushSubscriptionId(user!.email.toString());
 
       return userData;
     });

@@ -15,7 +15,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  late List<bool> readStatus;
+   List<bool> readStatus=[];
   late SharedPreferences prefs;
 
   @override
@@ -36,7 +36,16 @@ class _NotificationPageState extends State<NotificationPage> {
     //   });
     //
     // });
+    OneSignal.Notifications.addClickListener((event) {
+      CacheHelper.saveNotification(
+        key: 'notification_${event.notification.notificationId}',
+        notificationMessage: '${event.notification.body}',
+      );
+      //herer
+      Navigator.of(context).pushNamed('NotificationPage');
 
+      print("body is indedededed main: ${event.notification.body}");
+    });
       OneSignal.Notifications.addForegroundWillDisplayListener((event) {
         String message = event.notification.body ?? "";
         setState(() {
@@ -105,10 +114,13 @@ class _NotificationPageState extends State<NotificationPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Icon(
-                Icons.notifications,
-                size: 50.0,
-                color: Colors.blueAccent,
+              child: Hero(
+                tag: 'hero_noti',
+                child: Icon(
+                  Icons.notifications,
+                  size: 50.0,
+                  color: Colors.blueAccent,
+                ),
               ),
             ),
             SizedBox(height: 16.0),
@@ -124,7 +136,11 @@ class _NotificationPageState extends State<NotificationPage> {
             ),
             SizedBox(height: 16.0),
             Expanded(
-              child: ListView.builder(
+              child: widget.notifications.length==0
+                  ?
+              Center(child: Text('No notification Available Now..',style: TextStyle(fontSize: 20),))
+                  :
+              ListView.builder(
                 itemCount: widget.notifications.length,
                 itemBuilder: (context, index) {
                   return Dismissible(

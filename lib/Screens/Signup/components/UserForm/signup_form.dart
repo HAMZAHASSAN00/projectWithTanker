@@ -1,5 +1,7 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_auth/Screens/Signup/components/choose_tank_photo/sliderTank/models.dart';
 import 'package:flutter_auth/network/local/cache_helper.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/repo/user_repositry.dart';
@@ -22,6 +24,8 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  Position? _currentPosition;
   String? _selectedTank;
   bool _isPasswordVisible=false;
 
@@ -178,10 +182,45 @@ class _SignUpFormState extends State<SignUpForm> {
               },
             ),
             SizedBox(height: 10),
+            //phone number
+            TextFormField(
+              controller: _phoneController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              decoration: InputDecoration(
+                hintText: "Your phone number",
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.phone),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your phone number';
+                } else if (!GetUtils.isPhoneNumber(value)) {
+                  return 'Please enter a valid phone number';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 10),
+            //location button
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
 
+                backgroundColor: _currentPosition != null? Colors.grey:Colors.greenAccent,
+              ),
+              child: _currentPosition != null?Text("Your location are taken"):Text("press to Share your location with us"),
+              onPressed: () async {
+                _permission();
+                _getCurrentLocation();
+                setState(() {
 
-
-
+                });
+              },
+            ),
+            SizedBox(height: 10),
             //signup button
             GestureDetector(
               child: ElevatedButton(
@@ -193,6 +232,10 @@ class _SignUpFormState extends State<SignUpForm> {
                       _emailController,
                       _passwordController,
                       tankModel,
+                      _phoneController,
+                      _currentPosition!.longitude??0.0,
+                      _currentPosition!.latitude??0.0,
+
                     );
                   }
                 },
@@ -235,5 +278,68 @@ class _SignUpFormState extends State<SignUpForm> {
     Get.delete<UserRepository>();
 
     super.dispose();
+  }
+  _getCurrentLocation() {
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+
+    }).catchError((e) {
+      print('error ${e}');
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        title: 'Error',
+        desc: '${e}',
+      ).show();
+    });
+  }
+  _permission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+// Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    permission = await Geolocator.requestPermission();
+    permission = await Geolocator.checkPermission();
+    print('permission ${permission}');
+    if(permission==LocationPermission.whileInUse){
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        animType: AnimType.rightSlide,
+        title: 'success',
+        desc: 'The location has been taken successfully',
+      ).show();
+    }
+    if (permission == LocationPermission.denied) {
+      print('permission == LocationPermission.denied');
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.rightSlide,
+          title: 'Error',
+          desc: 'Location Permission Denied',
+        ).show();
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        title: 'Error',
+        desc: 'Location permissions are permanently denied, we cannot request permissions.',
+      ).show();
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
   }
 }

@@ -56,7 +56,7 @@ class CacheHelper
       'width':userData.width,
       'length':userData.length,
       'waterTemp':userData.waterTemp,
-      'CurrentBills':userData.CurrentBills,
+      'CurrentBills':userData.currentBills,
       'isAutomaticModeSolar':userData.isAutomaticModeSolar,
 
     };
@@ -85,7 +85,7 @@ class CacheHelper
         width: userDataMap['width'],
         length: userDataMap['length'],
         waterTemp: userDataMap['waterTemp'],
-        CurrentBills: userDataMap['CurrentBills'],
+        currentBills: userDataMap['CurrentBills'],
         isAutomaticModeSolar: userDataMap['isAutomaticModeSolar'],
       );
     }
@@ -173,7 +173,9 @@ class CacheHelper
   }
   static List<String> getAllNotifications() {
     List<String> notificationKeys = getAllNotificationsKeys();
-
+  if (notificationKeys.length==15) {
+  CacheHelper.removeAllNotifications();
+  }
     // Retrieve notifications for each key
     List<String> notifications = [];
     for (String key in notificationKeys) {
@@ -184,5 +186,13 @@ class CacheHelper
     }
 
     return notifications;
+  }
+  static Future<void> removeAllNotifications() async {
+    List<String> notificationKeys = getAllNotificationsKeys();
+
+    // Remove each notification based on its key
+    for (String key in notificationKeys) {
+      await removeNotification(key: key);
+    }
   }
 }

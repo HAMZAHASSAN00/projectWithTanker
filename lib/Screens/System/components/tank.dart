@@ -63,7 +63,7 @@ class _TankPageState extends State<TankPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          isTurnedOnTank ? 'The pump is ON' : 'The pump is OFF',
+                          userData['isTurnedOnTank'] ? 'The pump is ON' : 'The pump is OFF',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -72,7 +72,7 @@ class _TankPageState extends State<TankPage> {
                         ),
                         Lottie.network(
                           'https://lottie.host/8cf67add-e2ae-46fd-8e70-1bd984c95b2a/Wga2XhFXsq.json',
-                          animate: isTurnedOnTank,
+                          animate: userData['isTurnedOnTank'],
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -81,7 +81,7 @@ class _TankPageState extends State<TankPage> {
                               child: Transform.scale(
                                 scale: 1.5,
                                 child: Switch(
-                                  value: isTurnedOnTank,
+                                  value: userData['isTurnedOnTank'],
                                   onChanged: isAutomaticMode
                                       ? (userDataIsTurnedOnTank){
                                     setState(() {
@@ -91,7 +91,7 @@ class _TankPageState extends State<TankPage> {
                                   }
                                       : (value) {
                                     setState(() {
-                                      isTurnedOnTank = value;
+                                      userData['isTurnedOnTank'] = value;
                                       print(userDataIsTurnedOnTank.toString());
                                     });
                                     userRepository.updateFirestoreData(
@@ -113,7 +113,7 @@ class _TankPageState extends State<TankPage> {
                         ),
                         SizedBox(height: 20),
                         Text(
-                          isTurnedOnTank
+                          userData['isTurnedOnTank']
                               ? 'Will send you a notification when the tank is filled'
                               : '----',
                           style: TextStyle(

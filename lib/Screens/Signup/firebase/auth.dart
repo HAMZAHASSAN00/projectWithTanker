@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth/network/local/cache_helper.dart';
 
 import '../../../newFeature/CurvedBottomNavBar.dart';
-import '../../System/tankerSystem/TankerSystemPage.dart';
+import '../../../TankerSystem/TankerSystemPage.dart';
 import '../../Welcome/welcome_screen.dart';
 
 class Auth extends StatelessWidget {

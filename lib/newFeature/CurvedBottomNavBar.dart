@@ -5,6 +5,7 @@ import '../Screens/System/components/NavBar.dart';
 import '../Screens/System/components/data.dart';
 import '../Screens/System/components/solarCells.dart';
 import '../Screens/System/components/tank.dart';
+import '../components/designUI.dart';
 
 
 class CurvedNavPage extends StatefulWidget {
@@ -21,34 +22,7 @@ class _CurvedNavPageState extends State<CurvedNavPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFBAD3FF),
-        elevation: 0,
-        title: Text(
-          "Automatic Pump",
-          style: TextStyle(
-           // color: colorth,
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(
-           // color: colorth,
-            icon: Icon(Icons.notifications),
-            onPressed: () {
-              // Handle notifications button press
-            },
-          ),
-          IconButton(
-           // color: colorth,
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              // Handle settings button press
-            },
-          ),
-        ],
-      ),
+      appBar: customAppBar( context,'Automatic Pump'),
       drawer: NavBar(),
       body: Center(
         child: _widgitItems[_selectedIndex],

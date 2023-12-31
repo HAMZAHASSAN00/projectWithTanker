@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../model/TankerModel.dart';
 class TankerRepository {
 
-  Future signUpTanker(BuildContext context,_nameController, _emailController, _passwordController,) async {
+  Future signUpTanker(BuildContext context,_nameController, _emailController, _passwordController,_phoneController,longitude,latitude) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
@@ -14,6 +14,12 @@ class TankerRepository {
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           userType: 'TankerUser',
+          phoneNumber: _phoneController.text.trim(),
+          longitude: longitude ?? 0.1,
+          latitude: latitude ?? 0.1,
+          isAvailable: false,
+          arrivalTime: '1 hour',
+          pricePerL: 11.5,
 
         );
         // If createUserWithEmailAndPassword is successful, proceed to create the user in Firestore
@@ -69,7 +75,33 @@ class TankerRepository {
     Map<String, dynamic> tankerData = {
       'name': TankerDoc.get('name'),
       'email': TankerDoc.get('email'),
+      'userType':TankerDoc.get('userType'),
+      'phoneNumber':TankerDoc.get('phoneNumber'),
+      'longitude':TankerDoc.get('longitude'),
+      'latitude':TankerDoc.get('latitude'),
+      'pricePerL':TankerDoc.get('pricePerL'),
+      'arrivalTime':TankerDoc.get('arrivalTime'),
 
+    };
+    print('form tankerData : ${tankerData}');
+
+    return tankerData;
+  }
+  Future<Map<String, dynamic>> getDataTankerWithEmail(email) async {
+
+    final DocumentSnapshot TankerDoc =
+    await FirebaseFirestore.instance.collection('Tankers').doc(email).get();
+
+    // Retrieve data from the main document
+    Map<String, dynamic> tankerData = {
+      'name': TankerDoc.get('name'),
+      'email': TankerDoc.get('email'),
+      'userType':TankerDoc.get('userType'),
+      'phoneNumber':TankerDoc.get('phoneNumber'),
+      'longitude':TankerDoc.get('longitude'),
+      'latitude':TankerDoc.get('latitude'),
+      'pricePerL':TankerDoc.get('pricePerL'),
+      'arrivalTime':TankerDoc.get('arrivalTime'),
     };
     print('form tankerData : ${tankerData}');
 
