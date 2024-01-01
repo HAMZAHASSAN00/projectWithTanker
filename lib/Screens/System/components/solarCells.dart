@@ -14,16 +14,16 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
   late Future<Stream<Map<String, dynamic>>> futureDataStream;
   UserRepository userRepository = UserRepository();
   bool isTurnedOnSolar = false;
-  late bool isAutomaticMode;
+  //late bool isAutomaticMode;
   late GlobalKey<_SolarCellsPageState> pageKeySolar;
 
   @override
   void initState() {
     super.initState();
     pageKeySolar = GlobalKey<_SolarCellsPageState>();
-    isAutomaticMode = CacheHelper.getBoolean(key: 'isAutomaticMode') ?? false;
+   // isAutomaticMode = CacheHelper.getBoolean(key: 'isAutomaticMode') ?? false;
     // Retrieve the value of isTurnedOn from CacheHelper
-    isTurnedOnSolar = CacheHelper.getBoolean(key: 'isTurnedOnSolar') ?? false;
+   // isTurnedOnSolar = CacheHelper.getBoolean(key: 'isTurnedOnSolar') ?? false;
     futureDataStream = userRepository.getDataStream();
   }
 
@@ -80,7 +80,7 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                                 scale: 1.5,
                                 child: Switch(
                                   value: userData['isTurnedOnSolar'],
-                                  onChanged: isAutomaticMode
+                                  onChanged: userData['isAutomaticModeSolar']
                                       ? null
                                       : (value) {
                                     setState(() {
@@ -119,7 +119,7 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                         ),
                         SizedBox(height: 7),
                         Text(
-                          isAutomaticMode
+                          userData['isAutomaticModeSolar']
                               ? 'Automatic mode must be turned off to be able to control'
                               : '',
                           style: TextStyle(

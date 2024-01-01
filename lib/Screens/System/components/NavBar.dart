@@ -21,7 +21,15 @@ class NavBar extends StatelessWidget {
         future: UserRepository().getData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(
+              child: Container(
+                width: 40, // Set the desired width
+                height: 40, // Set the desired height
+                child: CircularProgressIndicator(
+                  // Set other properties as needed
+                ),
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {

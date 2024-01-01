@@ -1,4 +1,3 @@
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Signup/components/UserForm/signup_screen_UserPage.dart';
@@ -6,10 +5,9 @@ import 'package:flutter_auth/Screens/Welcome/welcome_screen.dart';
 import 'package:flutter_auth/constants.dart';
 import 'package:flutter_auth/firebase_options.dart';
 import 'package:flutter_auth/soket/AskForTanker.dart';
-import 'package:flutter_auth/soket/requsetTanker.dart';
+import 'package:flutter_auth/soket/SocketConnection.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:socket_io_client/socket_io_client.dart' as io;
 
 import 'Screens/Login/components/login_screen.dart';
 import 'Screens/Signup/components/UserORTanker.dart';
@@ -18,6 +16,7 @@ import 'Screens/Signup/components/choose_tank_photo/sliderTank/screensSlider/Oth
 import 'Screens/Signup/firebase/auth.dart';
 import 'Screens/System/system_screen.dart';
 import 'TankerSystem/TankerForm/tankerSingup/TankerSignUpPage.dart';
+import 'TankerSystem/TankerSocket/TankerSystemPage2.dart';
 import 'TankerSystem/TankerSystemPage.dart';
 import 'TankerSystem/setting/settingTanker.dart';
 import 'controller/dependency_injection.dart';
@@ -41,27 +40,9 @@ Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   await CacheHelper.init();
-  io.Socket? socket;
-  //OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-  print('Connecting to the server...');
-  // Replace 'http://localhost:3000/' with your Socket.IO server URL
-  socket = io.io('https://handlerequests.onrender.com/', <String, dynamic>{
-    'transports': ['websocket'],
-    'autoConnect': false,
-  });
-
-  socket!.connect();
-  print(socket!.connected);
-  print('Connected to the server.');
-  print('Emitting a chat message...');
+  await SocketConnection.initializeAppSocket();
+  SocketConnection.tankerResponseToYou();
   OneSignal.initialize("9825dcdb-7434-420a-894a-1801f017386c");
-  // OneSignal.Notifications.requestPermission(true);
-  // print('form main : ${OneSignal.User.pushSubscription.id}');
-  // OneSignal.Notifications.addClickListener(
-  //   (event) {
-  //   print("all events: $event");
-  //   print("body is: ${event.notification.body}");
-  // });
   OneSignal.InAppMessages.addWillDisplayListener((event) {
     print("addWillDisplayListener main: ${event.message}");
   });
@@ -144,6 +125,7 @@ class MyApp extends ConsumerWidget {
           'NotificationPageTanker':(context)=>NotificationPageTanker(notifications: [],),
           'EditYourDataPage':(context)=>EditYourDataPage(),
           'AskForTanker':(context)=>AskForTanker(),
+          'TankerPage2':(context)=>TankerPage2(),
 
 
         }

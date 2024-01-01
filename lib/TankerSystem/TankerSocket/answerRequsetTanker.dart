@@ -1,20 +1,24 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/repo/Tanker_repositry.dart';
-import '../components/designUI.dart';
-import '../model/TankerModel.dart';
-import 'SocketConnection.dart';
+import 'package:flutter_auth/repo/user_repositry.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
-class RequestTank extends StatefulWidget {
+import '../../components/designUI.dart';
+import '../../model/TankerModel.dart';
+import '../../soket/SocketConnection.dart';
+
+class AnswerRequestTank extends StatefulWidget {
   final String email;
 
   // Constructor to take email as a required parameter
-  RequestTank({required this.email});
+  AnswerRequestTank({required this.email});
   @override
-  _RequestTankState createState() => _RequestTankState();
+  _AnswerRequestTankState createState() => _AnswerRequestTankState();
 }
 
-class _RequestTankState extends State<RequestTank> {
+class _AnswerRequestTankState extends State<AnswerRequestTank> {
 
   String messageTankerResponseToYou='';
 @override
@@ -37,8 +41,8 @@ class _RequestTankState extends State<RequestTank> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: perfictBlue,
-      appBar: customAppBar(context, "Request tanker"),
+      backgroundColor: TankerPageColor,
+      appBar: customAppBarTanker(context, "Answer tanker"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
@@ -49,7 +53,7 @@ class _RequestTankState extends State<RequestTank> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: FutureBuilder<Map<String, dynamic>>(
-              future: TankerRepository().getDataTankerWithEmail(widget.email),
+              future: UserRepository().getDataUserWithEmail(widget.email),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(

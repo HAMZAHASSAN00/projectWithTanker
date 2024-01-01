@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/network/local/cache_helper.dart';
 
+import '../../../TankerSystem/TankerSocket/TankerSystemPage2.dart';
 import '../../../newFeature/CurvedBottomNavBar.dart';
 import '../../../TankerSystem/TankerSystemPage.dart';
 import '../../Welcome/welcome_screen.dart';
@@ -20,7 +21,7 @@ class Auth extends StatelessWidget {
             if (email=='SimpleUser') {
               return CurvedNavPage();
             }  else{
-              return TankerSystemPage();
+              return TankerPage2();
             }
           }  else{
             return WelcomeScreen();

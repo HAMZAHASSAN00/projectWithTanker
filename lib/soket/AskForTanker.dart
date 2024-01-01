@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_auth/soket/requsetTanker.dart';
-import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/repo/user_repositry.dart';
 import '../../../components/designUI.dart';
 import '../../../model/UserModel.dart';
 import '../model/TankerModel.dart';
+import 'SocketConnection.dart';
 
 class AskForTanker extends StatefulWidget {
   @override
@@ -14,9 +13,9 @@ class AskForTanker extends StatefulWidget {
 }
 
 class _AskForTankerState extends State<AskForTanker> {
-
+  bool _isMounted = false;
   UserRepository userRepository = UserRepository();
-  io.Socket? socket;
+
   String datare = "";
   String data2 = "";
   String userType = "Tanker";
@@ -25,56 +24,31 @@ class _AskForTankerState extends State<AskForTanker> {
   List<String> emails = [];
    String emailUser='';
 
+  Future<void> initializeSocket() async {
+    //socket = SocketConnection.socket;
+   await SocketConnection.saveSocketEmail('Customer');
+    SocketConnection.requestDisplayTankers();
+
+  }
   @override
   void initState() {
     super.initState();
-  
-    print('Connecting to the server...');
-    // Replace 'http://localhost:3000/' with your Socket.IO server URL
-    socket = io.io('https://handlerequests.onrender.com/', <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
+    initializeSocket();
+    _isMounted = true;
+
+    SocketConnection.socket!.on('displayTankers', (data) {
+      if (_isMounted) {
+        print('displayTankers: $data');
+        print('usermodel email: ${FirebaseAuth.instance.currentUser!.email}');
+
+        setState(() {
+          datare = 'displayTankers$data';
+          emails = data.keys.toList();
+          print('Emails from displayTankers _isMounted: $emails');
+        });
+      }
     });
 
-    socket!.connect();
-    print(socket!.connected);
-    print('Connected to the server.');
-    print('Emitting a chat message...');
-    socket!.emit('saveSocketEmail', {
-      'userType': 'Customer',
-      'userEmail': '${FirebaseAuth.instance.currentUser!.email}', // Use userModel.email here
-      'Message': 'Hello, saving my email! Customer',
-    });
-    socket!.emit('requestDisplayTankers', {
-      'requestMessage': 'Hello, Tanker!',
-    });
-    socket!.on('displayTankers', (data) {
-      print('displayTankers: $data');
-      print('usermodel email: ${FirebaseAuth.instance.currentUser!.email}');
-
-      setState(() {
-        datare = 'displayTankers$data';
-
-        // Extract emails from the data and store them in an array
-        emails = data.keys.toList();
-        // Now you can use the 'emails' array as needed in your application
-        print('Emails: $emails');
-      });
-    });
-
-    socket!.emit('customerRequest', {
-      'tankerEmail': 'tank2@gmail.com',
-      'customerEmail': userModel.email, // Use userModel.email here
-      'requestMessage': 'Hello, Tanker!',
-    });
-    print('Emit done');
-    socket!.on('customerResponse', (data) {
-      print('Customer received response:$data');
-      print('usermodel email :$userModel.email');
-      setState(() {
-        datare = 'displayTankers customerResponse:$data';
-      });
-    });
   }
 
   @override
@@ -135,8 +109,9 @@ class _AskForTankerState extends State<AskForTanker> {
 
   @override
   void dispose() {
-    socket?.disconnect();
     super.dispose();
+    _isMounted = false;
+
   }
 
 

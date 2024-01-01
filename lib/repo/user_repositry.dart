@@ -177,6 +177,50 @@ class UserRepository {
     updateOneSignalUserPushSubscriptionId(user!.email.toString());
     return userData;
   }
+  Future<Map<String, dynamic>> getDataUserWithEmail(String email) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    print('form getData() : ${OneSignal.User.pushSubscription.id}');
+    final DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(user!.email).get();
+
+    // Retrieve data from the main document
+    Map<String, dynamic> userData = {
+      'name': userDoc.get('name'),
+      'email': userDoc.get('email'),
+      'isAutomaticMode': userDoc.get('isAutomaticMode'),
+      'isTurnedOnSolar': userDoc.get('isTurnedOnSolar'),
+      'isTurnedOnTank': userDoc.get('isTurnedOnTank'),
+
+      'height': userDoc.get('height'),
+      'width': userDoc.get('width'),
+      'length': userDoc.get('length'),
+
+
+      'waterTemp': userDoc.get('waterTemp'),
+      'currentBills': userDoc.get('currentBills'),
+      'isAutomaticModeSolar': userDoc.get('isAutomaticModeSolar'),
+      'userType': userDoc.get('userType'),
+      'roofAutoMode': userDoc.get('roofAutoMode'),
+      'groundAutoMode': userDoc.get('groundAutoMode'),
+      'tempPercentageAutoMode': userDoc.get('tempPercentageAutoMode'),
+      'phoneNumber':userDoc.get('phoneNumber') ,
+      'waterTimeArrival': userDoc.get('waterTimeArrival'),
+      'oneSignalId':userDoc.get('oneSignalId'),
+      'phoneNumber':userDoc.get('phoneNumber'),
+      'longitude':userDoc.get('longitude'),
+      'latitude':userDoc.get('latitude'),
+
+    };
+
+    // Access tank -> cmRoof and cmGround fields
+    Map<String, dynamic> tankData = userDoc.get('tank') ?? {} ;
+    String cmRoof = tankData['cmRoof'] ?? '0';
+    String cmGround = tankData['cmGround'] ?? '0';
+
+    userData['cmRoof'] = cmRoof;
+    userData['cmGround'] = cmGround;
+    updateOneSignalUserPushSubscriptionId(user!.email.toString());
+    return userData;
+  }
   Text getImportantDataText(Map<String, dynamic> userData) {
     double roofCm = double.parse(userData['cmRoof']);
     double groundCm = double.parse(userData['cmGround']);
