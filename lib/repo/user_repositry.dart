@@ -178,9 +178,10 @@ class UserRepository {
     return userData;
   }
   Future<Map<String, dynamic>> getDataUserWithEmail(String email) async {
+    print('gg');
     User? user = FirebaseAuth.instance.currentUser;
     print('form getData() : ${OneSignal.User.pushSubscription.id}');
-    final DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(user!.email).get();
+    final DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(email).get();
 
     // Retrieve data from the main document
     Map<String, dynamic> userData = {

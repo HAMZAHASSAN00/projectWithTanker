@@ -33,29 +33,25 @@ class _TankerPage2State extends State<TankerPage2> {
     //socket = SocketConnection.socket;
     await SocketConnection.saveSocketEmail('Tanker');
 
-    SocketConnection.socket!.on('customerRequestedYou', (data) {
-      print('Customer received response:$data');
-
-    });
   }
   @override
   void initState() {
     super.initState();
     initializeSocket();
-    _isMounted = true;
+
 
     SocketConnection.socket!.on('customerRequestedYou', (data) {
-      if (_isMounted) {
+
         print('displayTankers: $data');
         print('usermodel email: ${FirebaseAuth.instance.currentUser!.email}');
 
         setState(() {
 
-          emails = data.keys.toList();
+          emails.add('new request');
           print('Emails from customerRequestedYou _isMounted: $emails');
           handleReceivedData( data);
         });
-      }
+
     });
 
   }
@@ -120,7 +116,7 @@ class _TankerPage2State extends State<TankerPage2> {
                           return Card(
                             elevation: 2.0,
                             child: ListTile(
-                              title: Text('Tanker ${index + 1}'),
+                              title: Text('$customerEmailM ${index + 1}'),
                               subtitle: Text(emails[index]),
                               onTap: () {
                                 Navigator.pushReplacement(
@@ -149,7 +145,7 @@ class _TankerPage2State extends State<TankerPage2> {
   @override
   void dispose() {
     super.dispose();
-    _isMounted = false;
+
 
   }
   void handleReceivedData(dynamic data) {

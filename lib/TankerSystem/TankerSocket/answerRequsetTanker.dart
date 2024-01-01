@@ -8,6 +8,7 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 import '../../components/designUI.dart';
 import '../../model/TankerModel.dart';
 import '../../soket/SocketConnection.dart';
+import '../components/NavBarTanker.dart';
 
 class AnswerRequestTank extends StatefulWidget {
   final String email;
@@ -28,7 +29,7 @@ class _AnswerRequestTankState extends State<AnswerRequestTank> {
     // TODO: implement initState
     super.initState();
 
-     SocketConnection.saveSocketEmail('Customer');
+     SocketConnection.saveSocketEmail('Tanker');
 
     SocketConnection.socket!.on('tankerResponseToYou', (data) {
       print('tankerResponseToYou:$data');
@@ -43,6 +44,7 @@ class _AnswerRequestTankState extends State<AnswerRequestTank> {
     return Scaffold(
       backgroundColor: TankerPageColor,
       appBar: customAppBarTanker(context, "Answer tanker"),
+      drawer: NavBarTanker(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
@@ -107,12 +109,13 @@ class _AnswerRequestTankState extends State<AnswerRequestTank> {
                       SizedBox(height: 8.0),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: perfictBlue,
+                          backgroundColor: TankerPageColorDark,
                         ),
-                        child:Text("request Tanker"),
+                        child:Text("accept"),
                         onPressed: () async {
-
-                          SocketConnection.customerRequest(widget.email);
+print('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+                          SocketConnection.tankerAnswer(widget.email);
+print('hiiiiiiiii55555555');
                           AwesomeDialog(
                             context: context,
                             dialogType: DialogType.success,
@@ -120,12 +123,14 @@ class _AnswerRequestTankState extends State<AnswerRequestTank> {
                             title: 'success',
                             desc: 'request tank done successfully',
                           ).show();
+print('6666666666');
+                          Navigator.of(context).pop();
                         },
                       ),
                       SizedBox(height: 8.0),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: perfictBlue,
+                          backgroundColor: TankerPageColorDark,
                         ),
                         child:Text("cancel"),
                         onPressed: () async {

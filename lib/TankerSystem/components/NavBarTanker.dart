@@ -120,6 +120,14 @@ class NavBarTanker extends StatelessWidget {
                 ),
 
                 ListTile(
+                  leading: Icon(Icons.chat),
+                  title: Text('check request'),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('TankerPage2');
+                    // Add your logic for "About Us"
+                  },
+                ),
+                ListTile(
                   leading: Icon(Icons.people),
                   title: Text('About Us'),
                   onTap: () {
@@ -127,7 +135,6 @@ class NavBarTanker extends StatelessWidget {
                     // Add your logic for "About Us"
                   },
                 ),
-
                 ListTile(
                   leading: Icon(Icons.exit_to_app),
                   title: Text('Logout'),
