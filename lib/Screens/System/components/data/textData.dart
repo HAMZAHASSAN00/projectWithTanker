@@ -47,68 +47,45 @@ class _ImportantDataWidgetState extends State<ImportantDataWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+
+          SizedBox(height: 10),
           Text(
-            "Important Data",
+            "Tank :",
             style: TextStyle(fontSize: 24, color: Colors.blueAccent, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
           Text(
             'Roof tank contain : ${widget.userData['cmRoof']} % \n Ground tank contain :  ${widget.userData['cmGround']} %',
             style: TextStyle(fontSize: 18, color: Colors.blueAccent),
             textAlign: TextAlign.center,
           ),
           UserRepository().getImportantDataText(widget.userData),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              // Toggle automatic mode
-              setState(() {
-                isAutomaticMode = !isAutomaticMode;
-                // Save the updated value of isAutomaticMode
-                CacheHelper.saveBoolean(key: 'isAutomaticMode', value: isAutomaticMode);
-                widget.userData['isAutomaticMode'] = isAutomaticMode;
-              });
-              userRepository.updateFirestoreData(
-                  'isAutomaticMode',
-                  isAutomaticMode,
-                  'Users',
-                  widget.userData['email']);
 
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isAutomaticMode ? Colors.green : Colors.grey,
-              disabledBackgroundColor: Colors.grey,
-              textStyle: TextStyle(color: perfictBlue), // Text color
-              padding: EdgeInsets.all(16), // Button padding
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  isAutomaticMode ? 'Automatic Mode' : 'Automatic Mode is Off',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Icon(
-                  isAutomaticMode ? Icons.power : Icons.power_settings_new,
-                  size: 20, // Adjust the size of the icon as needed
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 10),
           Text(
-            isAutomaticMode ? 'Automatic mode is active' : '',
+            widget.userData['isAutomaticMode'] ? 'Tank Automatic mode is active' : '',
             style: TextStyle(
               fontSize: 16,
-              color: isAutomaticMode ? Colors.green : Colors.grey,
+              color: widget.userData['isAutomaticMode'] ? Colors.green : Colors.grey,
               fontWeight: FontWeight.bold,
             ),
           ),
-
+          SizedBox(height: 30),
+          Text(
+            "Solar geyser :",
+            style: TextStyle(fontSize: 24, color: Colors.blueAccent, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Water temperature  : ${widget.userData['waterTemp']} ',
+            style: TextStyle(fontSize: 18, color: Colors.blueAccent),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            widget.userData['isAutomaticModeSolar'] ? 'Solar geyser Automatic mode is active' : '',
+            style: TextStyle(
+              fontSize: 16,
+              color:  widget.userData['isAutomaticModeSolar'] ? Colors.green : Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
 
 
         ],

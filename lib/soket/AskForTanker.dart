@@ -72,6 +72,9 @@ class _AskForTankerState extends State<AskForTanker> {
             userModel = UserModel(
               name: userData['name'],
               email: userData['email'],
+            phoneNumber: userData['phoneNumber'],
+              longitude: userData['longitude'],
+              latitude: userData['latitude'],
             );
 
             return Padding(
@@ -91,7 +94,7 @@ class _AskForTankerState extends State<AskForTanker> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RequestTank(email: '${emails[index]}'), // Replace with the actual email
+                            builder: (context) => RequestTank(email: '${emails[index]}',name: userModel.name.toString(),phone: userModel.phoneNumber.toString(),longitude: userModel.longitude!.toDouble(),latitude: userModel.latitude!.toDouble(),), // Replace with the actual email
                           ),
                         );
 

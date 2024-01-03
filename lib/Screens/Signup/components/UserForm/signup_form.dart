@@ -233,8 +233,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       _passwordController,
                       tankModel,
                       _phoneController,
-                      _currentPosition!.longitude??0.0,
-                      _currentPosition!.latitude??0.0,
+                      _currentPosition?.longitude ?? 0.1, // Use null-aware operator
+                      _currentPosition?.latitude ?? 0.1,
 
                     );
                   }

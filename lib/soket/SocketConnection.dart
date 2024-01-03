@@ -1,9 +1,7 @@
 import 'dart:async';
 
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class SocketConnection {
@@ -37,17 +35,21 @@ class SocketConnection {
  }
 
 
-    static void customerRequest(tankerEmail)  {
+    static void customerRequest(tankerEmail,String customerName,String customerPhone,double distance,)  {
       socket!.emit('customerRequest', {
         'tankerEmail': '${tankerEmail}',
         'customerEmail': '${FirebaseAuth.instance.currentUser!.email}', // Use userModel.email here
-        'requestMessage': 'Hello, Tanker !',
+      'customerName':'${customerName}',
+      'customerPhone':'${customerPhone}',
+      'distance':'${distance}',
+        'requestMessage':'hi tanker!',
       });
  }
  static void tankerResponseToYou() {
    socket!.on('tankerResponseToYou', (data) {
      print('tankerResponseToYou:$data');
-     messageTankerResponseToYou = '${data}';
+     handleReceivedData(data);
+    // messageTankerResponseToYou = '${data}';
      // Add this line to push the message to the stream
 
    });
@@ -55,11 +57,11 @@ class SocketConnection {
 
 
 
- static void tankerAnswer(customerEmail)  {
+ static void tankerAnswer(customerEmail,message)  {
    socket!.emit('tankerResponse', {
      'tankerEmail': '${FirebaseAuth.instance.currentUser!.email}',
      'customerEmail': '${customerEmail}', // Use userModel.email here
-     'requestMessage': 'Hello, Tanker from hamza!',
+     'Response': '${message}',
    });
  }
  static void customerRequestedYou() {
@@ -80,6 +82,12 @@ class SocketConnection {
       print(' outside Emails: $emails');
       return emails;
     }
+ static void handleReceivedData(dynamic data) {
+   if (data != null && data is Map<String, dynamic>) {
+     String response = data['Response'];
+       messageTankerResponseToYou = '$response';
 
+   }
+ }
 
 }
