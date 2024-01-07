@@ -1,9 +1,13 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/TankerSystem/TankerSocket/TankerSystemPage2.dart';
+import 'package:flutter_auth/repo/Tanker_repositry.dart';
 import 'package:flutter_auth/repo/user_repositry.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 import '../../components/designUI.dart';
+import '../../model/TankerModel.dart';
 import '../../model/UserModel.dart';
 import '../../soket/SocketConnection.dart';
 import '../components/NavBarTanker.dart';
@@ -21,14 +25,14 @@ class AnswerRequestTank extends StatefulWidget {
 class _AnswerRequestTankState extends State<AnswerRequestTank> {
   bool _isMounted = false;
   String messageTankerResponseToYou='';
-@override
+  @override
 
-@override
+  @override
   void initState()  {
     // TODO: implement initState
     super.initState();
     _isMounted = true;
-     SocketConnection.saveSocketEmail('Tanker');
+    SocketConnection.saveSocketEmail('Tanker');
 
     SocketConnection.socket!.on('tankerResponseToYou', (data) {
       if (_isMounted) {
@@ -173,7 +177,7 @@ class _AnswerRequestTankState extends State<AnswerRequestTank> {
                         ),
                         child:Text("reject"),
                         onPressed: () async {
-
+                          print('pppp');
                           SocketConnection.tankerAnswer(widget.email,'reject');
                           Navigator.push(
                             context,

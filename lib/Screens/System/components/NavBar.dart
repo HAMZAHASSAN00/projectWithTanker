@@ -34,10 +34,7 @@ class NavBar extends StatelessWidget {
             return Text('Error: ${snapshot.error}');
           } else {
             Map<String, dynamic> userData = snapshot.data!;
-            UserModel userModel = UserModel(
-              name: userData['name'],
-              email: userData['email'],
-            );
+            UserModel userModel = UserModel.fromJson(userData);
             CacheHelper.saveUserData(key: 'user_data', userData: userModel);
 
             return ListView(
@@ -111,6 +108,16 @@ class NavBar extends StatelessWidget {
 
                   },
                 ),
+
+
+                ListTile(
+                  leading: Icon(Icons.donut_large),
+                  title: Text('Billing'),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('Billing');                    // Add your logic for "How the System Works"
+                  },
+                ),
+
                 ListTile(
                   leading: Icon(Icons.water_drop_rounded),
                   title: Text('Ask For Tanker'),
@@ -119,23 +126,6 @@ class NavBar extends StatelessWidget {
                     // Add your logic for "How the System Works"
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.line_style_rounded),
-                  title: Text('New style'),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('GoogleBottomBar');
-                    // Add your logic for "Settings"
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.line_style_rounded),
-                  title: Text('New style 2'),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('system');
-                    // Add your logic for "Settings"
-                  },
-                ),
-
                 ListTile(
                   leading: Icon(Icons.info),
                   title: Text('How the System Works'),

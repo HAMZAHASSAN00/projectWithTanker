@@ -15,7 +15,10 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: perfictBlue,
-      appBar: customAppBar(context, 'Password Reset'),
+      appBar: AppBar(
+          backgroundColor:perfictBlue,
+          title: Text('Rest password'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

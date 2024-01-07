@@ -28,7 +28,6 @@ class _TankerPage2State extends State<TankerPage2> {
   late UserModel userModel = UserModel();
   late TankerModel tanker = TankerModel();
   List<String> emails = [];
-  List<Map<String, String>> requestDataList = []; // List to store request data
   String emailUser = '';
 
   Future<void> initializeSocket() async {
@@ -75,10 +74,7 @@ class _TankerPage2State extends State<TankerPage2> {
             } else {
               Map<String, dynamic> userData = snapshot.data!;
               print('tanker data $userData');
-              userModel = UserModel(
-                name: userData['name'],
-                email: userData['email'],
-              );
+              userModel = UserModel.fromJson(userData);
 
               return Container(
                 padding: EdgeInsets.all(16.0),
@@ -107,7 +103,7 @@ class _TankerPage2State extends State<TankerPage2> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: requestDataList.length == 0
+                        child: emails.length == 0
                             ? Center(
                           child: Text(
                             'No request ..',
@@ -115,29 +111,23 @@ class _TankerPage2State extends State<TankerPage2> {
                           ),
                         )
                             : ListView.builder(
-                          itemCount: requestDataList.length,
+                          itemCount: emails.length,
                           itemBuilder: (context, index) {
                             return Card(
                               elevation: 2.0,
                               child: ListTile(
-                                title: Text(
-                                  '${requestDataList[index]['customerName'] ?? ''} ${index + 1}',
-                                ),
+                                title: Text('$customerNameM ${index + 1}'),
                                 subtitle: Text(emails[index]),
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => AnswerRequestTank(
-                                        email: requestDataList[index]['customerEmail'] ?? '',
-                                        distance: requestDataList[index]['distance'] ?? '',
-                                      ),
+                                      builder: (context) => AnswerRequestTank(email: customerEmailM, distance: distanceM),
                                     ),
                                   );
 
                                   setState(() {
                                     emails.removeAt(index);
-                                    requestDataList.removeAt(index);
                                   });
                                 },
                               ),
@@ -157,8 +147,7 @@ class _TankerPage2State extends State<TankerPage2> {
   }
 
   Future<void> _refreshData() async {
-    Map<String, dynamic> updatedData =
-    await TankerRepository().getDataTanker();
+    Map<String, dynamic> updatedData = await TankerRepository().getDataTanker();
     setState(() {
       userModel = UserModel(
         name: updatedData['name'],
@@ -195,13 +184,6 @@ class _TankerPage2State extends State<TankerPage2> {
         customerPhoneM = '$customerPhone';
         distanceM = '$distance';
         requestMessageM = '$requestMessage';
-
-        // Save data to the list
-        requestDataList.add({
-          'customerEmail': customerEmailM,
-          'distance': distanceM,
-          'customerName': customerNameM,
-        });
       });
     }
   }

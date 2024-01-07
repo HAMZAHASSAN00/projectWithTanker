@@ -1,17 +1,19 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/model/TankerModel.dart';
+import 'package:flutter_auth/repo/Tanker_repositry.dart';
 import 'package:flutter_auth/repo/user_repositry.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../components/designUI.dart';
 import '../../../model/UserModel.dart';
-import '../../CurvedBottomNavBar.dart';
+import '../TankerSocket/TankerSystemPage2.dart';
 
-class EditYourDataPage extends StatefulWidget {
+class editTankerDataPage extends StatefulWidget {
   @override
-  _EditYourDataPageState createState() => _EditYourDataPageState();
+  _editTankerDataPageState createState() => _editTankerDataPageState();
 }
 
-class _EditYourDataPageState extends State<EditYourDataPage> {
+class _editTankerDataPageState extends State<editTankerDataPage> {
   bool notificationEnabled = true;
   bool darkModeEnabled = false;
   double textSize = 16.0;
@@ -19,12 +21,12 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
   String selectedTheme = 'Light';
   late TextEditingController _usernameController;
   late TextEditingController _phoneController;
-  TextEditingController _tempPercentageAutoModeController = TextEditingController();
+  TextEditingController _pricePerLController = TextEditingController();
+  TextEditingController _waterTimeArrivalController = TextEditingController();
+  TextEditingController _groundAutoModeController = TextEditingController();
   TextEditingController _roofAutoModeController = TextEditingController();
   UserRepository userRepository = UserRepository();
   Position? _currentPosition;
-  String _selectedDay = 'Sunday';
-
   @override
   void initState() {
     super.initState();
@@ -35,10 +37,10 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: perfictBlue,
-      appBar: customAppBar(context, 'Edit Your Data'),
+      backgroundColor: TankerPageColor,
+      appBar: customAppBarTanker(context, 'Edit Your Data'),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: UserRepository().getData(),
+        future: TankerRepository().getDataTanker(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -49,7 +51,8 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
           } else {
             Map<String, dynamic> userData = snapshot.data!;
             print('tanker data $userData');
-            UserModel userModel = UserModel.fromJson(userData);
+            TankerModel tankerModel = TankerModel.fromJson(userData);
+
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
@@ -61,17 +64,17 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
                     child: ListTile(
                       title: Text('Name'),
                       subtitle: Text(
-                        userModel?.name ?? '',
+                        tankerModel?.name ?? '',
                       ),
                       onTap: () {
                         _showEditDialog(
                           'Edit Name',
                           _usernameController,
-                          userModel?.name ?? '',
+                          tankerModel?.name ?? '',
                               (value) {
                             setState(() {
-                              userModel.name = value;
-                              userRepository.updateFirestoreData('name', value, 'Users', userModel!.email.toString());
+                              tankerModel.name = value;
+                              userRepository.updateFirestoreData('name', value, 'Tankers', tankerModel!.email.toString());
                             });
                           },
                         );
@@ -83,17 +86,17 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
                     child: ListTile(
                       title: Text('Phone'),
                       subtitle: Text(
-                        userModel?.phoneNumber ?? '',
+                        tankerModel?.phoneNumber ?? '',
                       ),
                       onTap: () {
                         _showEditDialog(
                           'Edit Phone',
                           _phoneController,
-                          userModel?.phoneNumber ?? '',
+                          tankerModel?.phoneNumber ?? '',
                               (value) {
                             setState(() {
-                              userModel.phoneNumber = value;
-                              userRepository.updateFirestoreData('phoneNumber', value, 'Users', userModel!.email.toString());
+                              tankerModel.phoneNumber = value;
+                              userRepository.updateFirestoreData('phoneNumber', value, 'Tankers', tankerModel!.email.toString());
                             });
                           },
                         );
@@ -103,19 +106,19 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
                   Card(
                     elevation: 2.0,
                     child: ListTile(
-                      title: Text('Temp Percentage Auto Mode'),
+                      title: Text('price per L'),
                       subtitle: Text(
-                        userModel?.tempPercentageAutoMode.toString() ?? '',
+                        '${tankerModel?.pricePerL}' ?? '',
                       ),
                       onTap: () {
                         _showEditDialog(
-                          'Edit Temp Percentage Auto Mode',
-                          _tempPercentageAutoModeController,
-                          userModel?.tempPercentageAutoMode.toString() ?? '',
+                          'Edit Price per L',
+                          _pricePerLController,
+                          '${tankerModel?.pricePerL}'  ?? '',
                               (value) {
                             setState(() {
-                              userModel.tempPercentageAutoMode = double.parse(value);
-                              userRepository.updateFirestoreData('tempPercentageAutoMode', userModel.tempPercentageAutoMode, 'Users', userModel.email.toString());
+                              tankerModel.pricePerL = value as double?;
+                              userRepository.updateFirestoreData('pricePerL', value, 'Tankers', tankerModel!.email.toString());
                             });
                           },
                         );
@@ -123,82 +126,11 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
                     ),
                   ),
 
-
-              Card(
-                elevation: 2.0,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Text('Water Time Arrival'),
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedDay,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedDay = value!;
-                            userRepository.updateFirestoreData(
-                              'waterTimeArrival',
-                              value,
-                              'Users',
-                              userModel!.email.toString(),
-                            );
-                          });
-                        },
-                        items: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-                            .map((day) {
-                          return DropdownMenuItem<String>(
-                            value: day,
-                            child: Text(day),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          hintText: "Select the day",
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Icon(Icons.timelapse_rounded),
-                          ),
-                        ),
-                        isExpanded: true, // Adjusts the width to fill the available space
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-
-              Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Roof Auto Mode'),
-                      subtitle: Text(
-                        userModel?.roofAutoMode.toString() ?? '',
-                      ),
-                      onTap: () {
-                        _showEditDialog(
-                          'Edit Roof Auto Mode',
-                          _roofAutoModeController,
-                          userModel?.roofAutoMode.toString() ?? '',
-                              (value) {
-                            setState(() {
-                              userModel.roofAutoMode = double.parse(value);
-                              userRepository.updateFirestoreData('roofAutoMode', userModel.roofAutoMode, 'Users', userModel.email.toString());
-                            });
-                          },
-                        );
-                      },
-                    ),
-                  ),
                   Card(
                     elevation: 2.0,
                     child: ListTile(
                       title: Text("Your location"),
-                      subtitle: Text("LAT: ${userModel.latitude}, LNG: ${userModel.longitude}" ?? ''),
+                      subtitle: Text("LAT: ${tankerModel.latitude}, LNG: ${tankerModel.longitude}" ?? ''),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -213,8 +145,8 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
                                 onPressed: () async {
                                   _permission();
                                   _getCurrentLocation();
-                                  userRepository.updateFirestoreData('latitude', _currentPosition!.latitude, 'Users', userModel.email.toString());
-                                  userRepository.updateFirestoreData('longitude', _currentPosition!.longitude, 'Users', userModel.email.toString());
+                                  userRepository.updateFirestoreData('latitude', _currentPosition!.latitude, 'Tankers', tankerModel.email.toString());
+                                  userRepository.updateFirestoreData('longitude', _currentPosition!.longitude, 'Tankers', tankerModel.email.toString());
                                   Navigator.pop(context); // Close the dialog after updating location
                                 },
                               ),
@@ -227,7 +159,7 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
                   SizedBox(height: 10,),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: perfictBlueDark,
+                      backgroundColor: TankerPageColorDark,
                     ),
                     child:Text("DONE"),
                     onPressed: () async {
@@ -235,12 +167,11 @@ class _EditYourDataPageState extends State<EditYourDataPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CurvedNavPage(),
+                          builder: (context) => TankerPage2(),
                         ),
                       );
                     },
                   ),
-
 
 
                 ],

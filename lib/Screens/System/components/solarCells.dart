@@ -60,8 +60,6 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
-                      SizedBox(height: 20),
                       Text(
                         userData['isTurnedOnSolar']
                             ? 'Electrical heater is ON'
@@ -72,9 +70,13 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                           color: Colors.black45,
                         ),
                       ),
-                      SizedBox(height: 7),
 
-                      SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('EditYourDataPage');
+                        },
+                        child: Text('Auto mode temp :${userData['tempPercentageAutoMode']}'),
+                      ),
                       if (userData['isTurnedOnSolar'])
                         Lottie.network(
                           'https://lottie.host/5064be26-9728-468f-a3ae-6d78ad7db05f/R0Or7FxaP5.json',
@@ -88,8 +90,10 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+
                           Column(
                             children: [
+
                               IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -140,7 +144,7 @@ class _SolarCellsPageState extends State<SolarCellsPage> {
                             ),
                           ),
                         ],),
-                      SizedBox(height: 10,),
+
                       Text(
                         isAutomaticModeSolar
                             ? 'Automatic mode must be turned off to be able to control'

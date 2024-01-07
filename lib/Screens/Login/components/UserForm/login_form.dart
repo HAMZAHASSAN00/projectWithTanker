@@ -58,8 +58,9 @@ class _LoginFormState extends State<LoginForm> {
 //             animType: AnimType.rightSlide,
 //             title: 'Error',
 //             desc: 'Login failed. Please check your user type.',
-//           ).show();
+//           ).show();}});
 /////////////////////////////////////
+    //////////////////not verified
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
@@ -85,6 +86,7 @@ class _LoginFormState extends State<LoginForm> {
           ).show();
         }
       });
+      /////////////////////////////////////
     } catch (e) {
       print("Error during login: $e");
       // ScaffoldMessenger.of(context).showSnackBar(
@@ -152,6 +154,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           SizedBox(height: defaultPadding),
+
           ListTile(
             title: Text("User Type"),
             subtitle: Row(
@@ -187,7 +190,7 @@ class _LoginFormState extends State<LoginForm> {
               ],
             ),
           ),
-          SizedBox(height: defaultPadding),
+
           Hero(
             tag: "login_btn",
             child: ElevatedButton(
@@ -199,7 +202,8 @@ class _LoginFormState extends State<LoginForm> {
               child: Text("Login".toUpperCase()),
             ),
           ),
-          SizedBox(height: defaultPadding),
+          SizedBox(height: 7),
+
           AlreadyHaveAnAccountCheck(
             press: () {
               Navigator.push(
@@ -212,6 +216,9 @@ class _LoginFormState extends State<LoginForm> {
               );
             },
           ),
+          TextButton(onPressed: (){
+            Navigator.of(context).pushNamed('PasswordResetPage');
+          }, child: Text('forget password ?',style: TextStyle(fontSize: 10),)),
           SizedBox(height: 30),
         ],
       ),

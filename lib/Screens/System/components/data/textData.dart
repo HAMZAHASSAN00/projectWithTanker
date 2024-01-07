@@ -58,8 +58,8 @@ class _ImportantDataWidgetState extends State<ImportantDataWidget> {
             style: TextStyle(fontSize: 18, color: Colors.blueAccent),
             textAlign: TextAlign.center,
           ),
-          UserRepository().getImportantDataText(widget.userData),
-
+          // UserRepository().getImportantDataText(widget.userData),
+          //
           Text(
             widget.userData['isAutomaticMode'] ? 'Tank Automatic mode is active' : '',
             style: TextStyle(

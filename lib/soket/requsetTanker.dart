@@ -96,15 +96,7 @@ class _RequestTankState extends State<RequestTank> {
                   } else {
                     Map<String, dynamic> userData = snapshot.data!;
                     print('tanker data $userData');
-                    TankerModel tankerModel = TankerModel(
-                      name: userData['name'],
-                      email: userData['email'],
-                      phoneNumber: userData['phoneNumber'],
-                      pricePerL: userData['pricePerL'],
-                      isAvailable: userData['isAvailable'],
-                      latitude: userData['latitude'],
-                      longitude: userData['longitude'],
-                    );
+                    TankerModel tankerModel = TankerModel.fromJson(userData);
 
                     double customerLongitude = widget.longitude;
                     double customerLatitude = widget.latitude;

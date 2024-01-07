@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth/repo/user_repositry.dart';
 import '../../components/designUI.dart';
 import '../../model/UserModel.dart';
-import '../../repo/Tanker_repositry.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -33,11 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
           } else {
             Map<String, dynamic> UserData = snapshot.data!;
             print('tanker data ${UserData}');
-            UserModel userModel = UserModel(
-              name: UserData['name'],
-              email: UserData['email'],
-            );
-
+            UserModel userModel = UserModel.fromJson(UserData);
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
@@ -84,6 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                   ),
+
                   Card(
                     elevation: 2.0,
                     child: ListTile(
@@ -98,86 +94,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Enable Dark Mode'),
-                      trailing: Switch(
-                        value: darkModeEnabled,
-                        onChanged: (value) {
-                          setState(() {
-                            darkModeEnabled = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Text Size'),
-                      trailing: DropdownButton<double>(
-                        value: textSize,
-                        onChanged: (value) {
-                          setState(() {
-                            textSize = value!;
-                          });
-                        },
-                        items: [16.0, 18.0, 20.0, 22.0, 24.0]
-                            .map<DropdownMenuItem<double>>(
-                              (double value) => DropdownMenuItem<double>(
-                            value: value,
-                            child: Text(value.toString()),
-                          ),
-                        )
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Language'),
-                      trailing: DropdownButton<String>(
-                        value: selectedLanguage,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedLanguage = value!;
-                          });
-                        },
-                        items: ['English', 'Spanish', 'French', 'German']
-                            .map<DropdownMenuItem<String>>(
-                              (String value) => DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          ),
-                        )
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Theme'),
-                      trailing: DropdownButton<String>(
-                        value: selectedTheme,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedTheme = value!;
-                          });
-                        },
-                        items: ['Light', 'Dark', 'System']
-                            .map<DropdownMenuItem<String>>(
-                              (String value) => DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          ),
-                        )
-                            .toList(),
-                      ),
-                    ),
-                  ),
+
+
+
                 ],
               ),
             );

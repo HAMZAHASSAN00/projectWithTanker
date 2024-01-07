@@ -25,10 +25,7 @@ class NavBarTanker extends StatelessWidget {
           } else {
             Map<String, dynamic> tankerData = snapshot.data!;
             print('tnaker data ${tankerData}');
-            TankerModel tankerModel = TankerModel(
-              name: tankerData['name'],
-              email: tankerData['email'],
-            );
+            TankerModel tankerModel = TankerModel.fromJson(tankerData);
 
 
             return ListView(
@@ -89,24 +86,8 @@ class NavBarTanker extends StatelessWidget {
                   leading: Icon(Icons.settings),
                   title: Text('Settings'),
                   onTap: () {
-                    Navigator.of(context).pushNamed('SettingsPage');
+                    Navigator.of(context).pushNamed('SettingsPageTanker');
 
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.line_style_rounded),
-                  title: Text('New style'),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('GoogleBottomBar');
-                    // Add your logic for "Settings"
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.line_style_rounded),
-                  title: Text('New style 2'),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('system');
-                    // Add your logic for "Settings"
                   },
                 ),
 
@@ -119,14 +100,7 @@ class NavBarTanker extends StatelessWidget {
                   },
                 ),
 
-                ListTile(
-                  leading: Icon(Icons.chat),
-                  title: Text('check request'),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('TankerPage2');
-                    // Add your logic for "About Us"
-                  },
-                ),
+
                 ListTile(
                   leading: Icon(Icons.people),
                   title: Text('About Us'),

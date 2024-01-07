@@ -29,7 +29,7 @@ class _SignUpFormState extends State<SignUpForm> {
   String? _selectedTank;
   bool _isPasswordVisible=false;
 
-  TankModel tankModel=TankModel(tankName: CacheHelper.getTankModel(key: 'TankModel')?.tankName?? 'default', height: CacheHelper.getTankModel(key: 'TankModel')?.height ?? 1.5, width: CacheHelper.getTankModel(key: 'TankModel')?.width ??1.5,length: CacheHelper.getTankModel(key: 'TankModel')?.length ?? 1.5);
+  TankModel tankModel=TankModel(tankName: CacheHelper.getTankModel(key: 'TankModel')?.tankName?? 'Rectangular Water Tank', height: CacheHelper.getTankModel(key: 'TankModel')?.height ?? 1.5, width: CacheHelper.getTankModel(key: 'TankModel')?.width ??2,length: CacheHelper.getTankModel(key: 'TankModel')?.length ?? 1.5);
 
   @override
   void initState() {

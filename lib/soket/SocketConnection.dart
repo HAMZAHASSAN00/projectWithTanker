@@ -1,6 +1,4 @@
 import 'dart:async';
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -10,7 +8,8 @@ class SocketConnection {
 
  static Future<void> initializeAppSocket() async {
     print('Connecting to the server...');
-    socket = io.io('https://handlerequests.onrender.com/', <String, dynamic>{
+    socket = io.io('https://handlerequests.onrender.com/',
+        <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
@@ -26,14 +25,14 @@ class SocketConnection {
    socket!.emit('requestDisplayTankers', {
      'requestMessage': 'Hello, Tanker!',
    });}
-      static saveSocketEmail(String Usertype){
+
+ static saveSocketEmail(String Usertype){
   socket!.emit('saveSocketEmail', {
     'userType': '${Usertype}',
     'userEmail': '${FirebaseAuth.instance.currentUser!.email}', // Use userModel.email here
     'Message': 'Hello, saving my email! Customer',
   });
  }
-
 
     static void customerRequest(tankerEmail,String customerName,String customerPhone,double distance,)  {
       socket!.emit('customerRequest', {

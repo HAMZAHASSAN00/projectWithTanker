@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Signup/components/choose_tank_photo/sliderTank/models.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import '../model/UserModel.dart';
+
+// UserRepository class handles interactions with Firebase for User registration and data retrieval
 class UserRepository {
   Future createAuthWithEmailAndPassword(BuildContext context,_emailController,_passwordController )async{
    try {
@@ -13,12 +15,7 @@ class UserRepository {
        password: _passwordController.text.trim(),
      );
      await FirebaseAuth.instance.currentUser!.sendEmailVerification();
-
-     print('22FirebaseAuth.instance.currentUser!.emailVerified');
-
    }catch(e){
-     print('33FirebaseAuth.instance.currentUser!.emailVerified');
-
      AwesomeDialog(
        context: context,
        dialogType: DialogType.error,
@@ -27,9 +24,19 @@ class UserRepository {
        desc: 'not valid email, try anther one.',
      ).show();
    }
-  }
-  Future registerUser(BuildContext context,_nameController, _emailController, TankModel tankModel, _phoneController, double longitude,double latitude) async {
 
+  }
+
+
+  // Method to create Firebase authentication with email and password
+  Future registerUser(BuildContext context
+      ,_nameController,
+      _emailController,
+      TankModel tankModel,
+      _phoneController,
+      double longitude,
+      double latitude
+      ) async {
       final user = UserModel(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
@@ -45,22 +52,22 @@ class UserRepository {
         width: tankModel.width,//CacheHelper.getTankModel(key: 'TankModel')!.width ?? 30,
         length: tankModel.length,//CacheHelper.getTankModel(key: 'TankModel')!.width ?? 30,
         waterTemp:50.1,
-        currentBills:0.1,
+
         isAutomaticModeSolar:false,
         userType: 'defaultUserType',
-        roofAutoMode: 20.1,
-        groundAutoMode: 20.1,
-        tempPercentageAutoMode: 50.1,
+        roofAutoMode: 20.5,
+        groundAutoMode: 50.5,
+        tempPercentageAutoMode: 50.5,
         phoneNumber: _phoneController.text.trim(),
-        waterTimeArrival: '',
+        waterTimeArrival: 'Sunday',
         oneSignalId: null,
-        so1: '',
-        so2: '',
-        do1: 0.1,
-        do2: 0.1,
-        longitude: longitude ??0.1,
+        dailyBills:0.1,
+        monthlyBills: 0.1,
+        longitude: longitude ?? 0.1,
         latitude: latitude ?? 0.1,
       );
+
+
       // If createUserWithEmailAndPassword is successful, proceed to create the user in Firestore
       createUser(context, user);
       Navigator.of(context).pushNamed('loginScreen');
@@ -74,11 +81,9 @@ class UserRepository {
        ).show();
 
 
-      // Additional logic or navigation if needed after both operations
-
-
-
   }
+
+  // register a new user in Firestore
   Future signUp(
       BuildContext context,
       _nameController,
@@ -108,7 +113,7 @@ class UserRepository {
   }
 
 
-
+ // create a user collection and  document in Firestore
   Future<void> createUser(BuildContext context, UserModel user) async {
     try {
       await FirebaseFirestore.instance.collection('Users').doc(user.email).set(user.toJson());
@@ -132,7 +137,7 @@ class UserRepository {
       // );
     }
   }
-
+  //retrieve user data from Firestore
   Future<Map<String, dynamic>> getData() async {
     User? user = FirebaseAuth.instance.currentUser;
     print('form getData() : ${OneSignal.User.pushSubscription.id}');
@@ -152,7 +157,6 @@ class UserRepository {
 
 
       'waterTemp': userDoc.get('waterTemp'),
-      'currentBills': userDoc.get('currentBills'),
       'isAutomaticModeSolar': userDoc.get('isAutomaticModeSolar'),
       'userType': userDoc.get('userType'),
       'roofAutoMode': userDoc.get('roofAutoMode'),
@@ -161,9 +165,12 @@ class UserRepository {
       'phoneNumber':userDoc.get('phoneNumber') ,
       'waterTimeArrival': userDoc.get('waterTimeArrival'),
       'oneSignalId':userDoc.get('oneSignalId'),
-      'phoneNumber':userDoc.get('phoneNumber'),
       'longitude':userDoc.get('longitude'),
-          'latitude':userDoc.get('latitude'),
+      'latitude':userDoc.get('latitude'),
+      'dailyBills':userDoc.get('dailyBills'),
+      'monthlyBills':userDoc.get('monthlyBills'),
+
+
 
     };
 
@@ -177,6 +184,8 @@ class UserRepository {
     updateOneSignalUserPushSubscriptionId(user!.email.toString());
     return userData;
   }
+
+  //retrieve user data from Firestore using email
   Future<Map<String, dynamic>> getDataUserWithEmail(String email) async {
     print('gg');
     User? user = FirebaseAuth.instance.currentUser;
@@ -197,7 +206,6 @@ class UserRepository {
 
 
       'waterTemp': userDoc.get('waterTemp'),
-      'currentBills': userDoc.get('currentBills'),
       'isAutomaticModeSolar': userDoc.get('isAutomaticModeSolar'),
       'userType': userDoc.get('userType'),
       'roofAutoMode': userDoc.get('roofAutoMode'),
@@ -206,9 +214,12 @@ class UserRepository {
       'phoneNumber':userDoc.get('phoneNumber') ,
       'waterTimeArrival': userDoc.get('waterTimeArrival'),
       'oneSignalId':userDoc.get('oneSignalId'),
-      'phoneNumber':userDoc.get('phoneNumber'),
       'longitude':userDoc.get('longitude'),
       'latitude':userDoc.get('latitude'),
+      'dailyBills':userDoc.get('dailyBills'),
+      'monthlyBills':userDoc.get('monthlyBills'),
+
+
 
     };
 
@@ -222,29 +233,32 @@ class UserRepository {
     updateOneSignalUserPushSubscriptionId(user!.email.toString());
     return userData;
   }
-  Text getImportantDataText(Map<String, dynamic> userData) {
-    double roofCm = double.parse(userData['cmRoof']);
-    double groundCm = double.parse(userData['cmGround']);
+  // Text getImportantDataText(Map<String, dynamic> userData) {
+  //   double roofCm = double.parse(userData['cmRoof']);
+  //   double groundCm = double.parse(userData['cmGround']);
+  //
+  //   if (roofCm < 50 && groundCm > 50) {
+  //     return Text("You must turn on the pump",
+  //       style: TextStyle(fontSize: 18, color: Colors.red),
+  //       textAlign: TextAlign.center,);
+  //   } else if(roofCm < 50 && groundCm < 50) {
+  //     return Text("There is not enough water",
+  //       style: TextStyle(fontSize: 18, color: Colors.amber),
+  //       textAlign: TextAlign.center,);
+  //   }else {
+  //     return Text("No need to turn on the pump",
+  //       style: TextStyle(fontSize: 18, color: Colors.green),
+  //       textAlign: TextAlign.center,);
+  //   }
+  // }
 
-    if (roofCm < 50 && groundCm > 50) {
-      return Text("You must turn on the pump",
-        style: TextStyle(fontSize: 18, color: Colors.red),
-        textAlign: TextAlign.center,);
-    } else if(roofCm < 50 && groundCm < 50) {
-      return Text("There is not enough water",
-        style: TextStyle(fontSize: 18, color: Colors.amber),
-        textAlign: TextAlign.center,);
-    }else {
-      return Text("No need to turn on the pump",
-        style: TextStyle(fontSize: 18, color: Colors.green),
-        textAlign: TextAlign.center,);
-    }
-  }
+
   void updateOneSignalUserPushSubscriptionId(email){
     print('updateOneSignalUserPushSubscriptionId ${OneSignal.User.pushSubscription.id}');
     updateFirestoreData('oneSignalId', OneSignal.User.pushSubscription.id, 'Users', email);
   }
 
+//update OneSignal user push subscription ID in Firestore
   Future<Stream<Map<String, dynamic>>> getDataStream() async{
     User? user = FirebaseAuth.instance.currentUser;
     print('form getDataStream() : ${OneSignal.User.pushSubscription.id}');
@@ -263,7 +277,6 @@ class UserRepository {
 
         'isAutomaticModeSolar': userDoc.get('isAutomaticModeSolar'),
         'waterTemp': userDoc.get('waterTemp'),
-        'currentBills': userDoc.get('currentBills'),
         'userType': userDoc.get('userType'),
         'roofAutoMode': userDoc.get('roofAutoMode'),
         'groundAutoMode': userDoc.get('groundAutoMode'),
@@ -271,9 +284,14 @@ class UserRepository {
         'waterTimeArrival': userDoc.get('waterTimeArrival'),
         'oneSignalId':userDoc.get('oneSignalId'),
         'phoneNumber':userDoc.get('phoneNumber'),
+        'dailyBills':userDoc.get('dailyBills'),
+        'monthlyBills':userDoc.get('monthlyBills'),
+
+
 
       };
 
+      //retrieve user data as a stream for real-time updates
       Map<String, dynamic> tankData = userDoc.get('tank') ?? {};
       String cmRoof = tankData['cmRoof'] ?? '0';
       String cmGround = tankData['cmGround'] ?? '0';

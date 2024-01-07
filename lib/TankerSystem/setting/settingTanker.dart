@@ -19,8 +19,8 @@ class _SettingsPageTankerState extends State<SettingsPageTanker> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: perfictBlue,
-      appBar: customAppBar(context, 'Setting'),
+      backgroundColor: TankerPageColor,
+      appBar: customAppBarTanker(context, 'Setting'),
       body: FutureBuilder<Map<String, dynamic>>(
         future: TankerRepository().getDataTanker(),
         builder: (context, snapshot) {
@@ -32,10 +32,7 @@ class _SettingsPageTankerState extends State<SettingsPageTanker> {
           } else {
             Map<String, dynamic> UserData = snapshot.data!;
             print('tanker data ${UserData}');
-            UserModel userModel = UserModel(
-              name: UserData['name'],
-              email: UserData['email'],
-            );
+            UserModel userModel = UserModel.fromJson(UserData);
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -77,6 +74,15 @@ class _SettingsPageTankerState extends State<SettingsPageTanker> {
                   Card(
                     elevation: 2.0,
                     child: ListTile(
+                      title: Text('Edit your Data'),
+                      onTap: () {
+                        Navigator.of(context).pushNamed('editTankerDataPage');
+                      },
+                    ),
+                  ),
+                  Card(
+                    elevation: 2.0,
+                    child: ListTile(
                       title: Text('Enable Notifications'),
                       trailing: Switch(
                         value: notificationEnabled,
@@ -88,86 +94,10 @@ class _SettingsPageTankerState extends State<SettingsPageTanker> {
                       ),
                     ),
                   ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Enable Dark Mode'),
-                      trailing: Switch(
-                        value: darkModeEnabled,
-                        onChanged: (value) {
-                          setState(() {
-                            darkModeEnabled = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Text Size'),
-                      trailing: DropdownButton<double>(
-                        value: textSize,
-                        onChanged: (value) {
-                          setState(() {
-                            textSize = value!;
-                          });
-                        },
-                        items: [16.0, 18.0, 20.0, 22.0, 24.0]
-                            .map<DropdownMenuItem<double>>(
-                              (double value) => DropdownMenuItem<double>(
-                            value: value,
-                            child: Text(value.toString()),
-                          ),
-                        )
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Language'),
-                      trailing: DropdownButton<String>(
-                        value: selectedLanguage,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedLanguage = value!;
-                          });
-                        },
-                        items: ['English', 'Spanish', 'French', 'German']
-                            .map<DropdownMenuItem<String>>(
-                              (String value) => DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          ),
-                        )
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 2.0,
-                    child: ListTile(
-                      title: Text('Theme'),
-                      trailing: DropdownButton<String>(
-                        value: selectedTheme,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedTheme = value!;
-                          });
-                        },
-                        items: ['Light', 'Dark', 'System']
-                            .map<DropdownMenuItem<String>>(
-                              (String value) => DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          ),
-                        )
-                            .toList(),
-                      ),
-                    ),
-                  ),
+
+
+
+
                 ],
               ),
             );

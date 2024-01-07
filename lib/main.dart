@@ -18,22 +18,22 @@ import 'Screens/System/system_screen.dart';
 import 'TankerSystem/TankerForm/tankerSingup/TankerSignUpPage.dart';
 import 'TankerSystem/TankerSocket/TankerSystemPage2.dart';
 import 'TankerSystem/TankerSystemPage.dart';
+import 'TankerSystem/setting/editTankerData.dart';
 import 'TankerSystem/setting/settingTanker.dart';
 import 'controller/dependency_injection.dart';
 import 'network/local/cache_helper.dart';
 import 'newFeature/CurvedBottomNavBar.dart';
-import 'newFeature/Google_Bottom_Bar.dart';
 import 'newFeature/Simple_Onboarding_Page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'newFeature/aboutUs.dart';
+import 'newFeature/bills.dart';
 import 'newFeature/howTheSystemWork.dart';
 import 'newFeature/notification.dart';
 import 'newFeature/profileUI/ProfileScreen.dart';
 import 'newFeature/setting/component/editYourData.dart';
 import 'newFeature/setting/component/reser_password.dart';
 import 'newFeature/setting/setting.dart';
-import 'newFeature/theme.dart';
 import 'TankerSystem/components/notificationTanker.dart';
 
 Future<void> main() async{
@@ -68,10 +68,9 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context,WidgetRef ref) {
-    final _themeNotifier = ref.watch(themeNotifierProvider);
+
     print('MyApp extends ConsumerWidget ${OneSignal.User.pushSubscription.id}');
     return GetMaterialApp(
-        themeMode: _themeNotifier.themeMode,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Auth',
         theme: ThemeData(
@@ -107,8 +106,6 @@ class MyApp extends ConsumerWidget {
           'signupScreen':(context) => const SignUpScreen(),
           'system':(context) => const SystemScreen(),
           'Onboarding':(context) => const OnboardingPage1(),
-          'GoogleBottomBar':(context) => const GoogleBottomBar(),
-          'ThemePage':(context) => const ThemePage(),
           'ProfileScreen':(context) => ProfileScreen(),
           'AboutUsPage':(context) => AboutUsPage(),
           'HowItWorksPage':(context) => HowItWorksPage(),
@@ -126,6 +123,8 @@ class MyApp extends ConsumerWidget {
           'EditYourDataPage':(context)=>EditYourDataPage(),
           'AskForTanker':(context)=>AskForTanker(),
           'TankerPage2':(context)=>TankerPage2(),
+          'editTankerDataPage':(context)=>editTankerDataPage(),
+          'Billing':(context)=>Billing(),
 
 
         }

@@ -56,6 +56,7 @@ AppBar customAppBarTanker(BuildContext context,title) {
     ],
   );
 }
+Color perfictBlueDark=Color(0xFF5A95FF);
 Color perfictBlue=Color(0xFFBAD3FF);
 Color TankerPageColor=Color(0xFFC79EF6);
 Color TankerPageColorDark=Color(0xFF8F44FC);

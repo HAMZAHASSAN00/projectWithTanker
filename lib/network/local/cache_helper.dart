@@ -56,7 +56,7 @@ class CacheHelper
       'width':userData.width,
       'length':userData.length,
       'waterTemp':userData.waterTemp,
-      'CurrentBills':userData.currentBills,
+      'CurrentBills':userData.dailyBills,
       'isAutomaticModeSolar':userData.isAutomaticModeSolar,
 
     };
@@ -85,7 +85,7 @@ class CacheHelper
         width: userDataMap['width'],
         length: userDataMap['length'],
         waterTemp: userDataMap['waterTemp'],
-        currentBills: userDataMap['CurrentBills'],
+        dailyBills: userDataMap['CurrentBills'],
         isAutomaticModeSolar: userDataMap['isAutomaticModeSolar'],
       );
     }

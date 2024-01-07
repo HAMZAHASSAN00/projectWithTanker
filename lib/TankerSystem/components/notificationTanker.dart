@@ -106,8 +106,8 @@ class _NotificationPageTankerState extends State<NotificationPageTanker> {
     }
 
     return Scaffold(
-      backgroundColor: perfictBlue,
-      appBar: customAppBar(context,'Notifications'),
+      backgroundColor: TankerPageColor,
+      appBar: customAppBarTanker(context,'Notifications'),
       body: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(

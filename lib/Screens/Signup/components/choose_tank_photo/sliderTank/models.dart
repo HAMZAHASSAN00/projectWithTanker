@@ -29,11 +29,9 @@ class TankModel {
   });
 }
 
-
-
 List<DataModel> dataList = [
   DataModel("Rectangular Water Tank ", "assets/images/irontank.png",1.5,1.5,1),
   DataModel("Cylindrical Water Tank", "assets/images/balckTank.png", 2,1,1),
-  DataModel("Test Tank", "assets/images/testTank.png", 4,0.5,1),
+  DataModel("Test Tank", "assets/images/testTank.png", 14,0.5,1),
   DataModel("Other", "assets/images/plus0.png", 0.0,0.0,1),
 ];

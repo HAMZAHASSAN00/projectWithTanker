@@ -114,6 +114,12 @@ class _TankPageState extends State<TankPage> {
                           color: Colors.black45,
                         ),
                       ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('EditYourDataPage');
+                        },
+                        child: Text('ground Auto Mode :${userData['groundAutoMode']}, Roof Auto Mode :${userData['roofAutoMode']}'),
+                      ),
                       Lottie.network(
                         'https://lottie.host/8cf67add-e2ae-46fd-8e70-1bd984c95b2a/Wga2XhFXsq.json',
                         animate: userData['isTurnedOnTank'],
@@ -180,7 +186,7 @@ SizedBox(width: 20,),
                           ),
                         ],
                       ),
-                      SizedBox(height: 7),
+
                       Text(
                         userData['isTurnedOnTank']
                             ? 'Will send you a notification when the tank is filled'
@@ -201,7 +207,7 @@ SizedBox(width: 20,),
                           color: Colors.red,
                         ),
                       ),
-                      SizedBox(height: 7),
+
                     ],
                   ),
                 );

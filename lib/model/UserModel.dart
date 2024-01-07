@@ -1,7 +1,7 @@
 class UserModel {
   String? name;
   String? email;
-  Tank? tank; // Use the Tank type
+  Tank? tank;
   bool? isTurnedOnTank;
   bool? isTurnedOnSolar;
   bool? isAutomaticMode ;
@@ -11,7 +11,6 @@ class UserModel {
   double? length;
   String? userType;
   double? waterTemp;
-  double? currentBills; // Updated the field name to follow Dart naming conventions
   bool? isAutomaticModeSolar;
   double? roofAutoMode;
   double? groundAutoMode;
@@ -21,11 +20,8 @@ class UserModel {
   String? oneSignalId;
   double? latitude;
   double? longitude;
-  String? so1;
-  String? so2;
-  double? do1;
-  double? do2;
-
+  double? dailyBills;
+  double? monthlyBills;
 
   UserModel({
     this.name,
@@ -39,7 +35,7 @@ class UserModel {
     this.width,
     this.length,
     this.waterTemp,
-    this.currentBills,
+
     this.isAutomaticModeSolar,
     this.userType,
     this.roofAutoMode,
@@ -50,10 +46,8 @@ class UserModel {
     this.oneSignalId,
     this.latitude,
     this.longitude,
-    this.so1,
-    this.so2,
-    this.do1,
-    this.do2,
+    this.dailyBills,
+    this.monthlyBills,
   });
 
   UserModel.fromJson(Map<String, dynamic> json)
@@ -67,7 +61,7 @@ class UserModel {
         width = json['width'],
         length = json['length'],
         waterTemp = json['waterTemp'],
-        currentBills = json['currentBills'],
+        dailyBills = json['dailyBills'],
         isAutomaticModeSolar = json['isAutomaticModeSolar'],
         userType = json['userType'],
         roofAutoMode = json['roofAutoMode'],
@@ -78,10 +72,8 @@ class UserModel {
         oneSignalId=json['oneSignalId'],
   latitude=json['longitude'],
   longitude=json['latitude'],
-        so1 = json['so1'],
-        so2 = json['so2'],
-        do1 = json['do1'],
-        do2 = json['do2'],
+        monthlyBills = json['monthlyBills'],
+
 
         tank = json['tank'] != null ? Tank.fromJson(json['tank']) : null;
 
@@ -98,7 +90,7 @@ class UserModel {
       'height': height,
       'length': length,
       'waterTemp': waterTemp,
-      'currentBills': currentBills,
+      'dailyBills': dailyBills,
       'isAutomaticModeSolar': isAutomaticModeSolar,
       'userType': userType,
       'roofAutoMode': roofAutoMode,
@@ -109,10 +101,7 @@ class UserModel {
       'oneSignalId':oneSignalId,
       'longitude': longitude,
       'latitude':latitude,
-      'so1': so1,
-      'so2': so2,
-      'do1': do1,
-      'do2': do2,
+      'monthlyBills': monthlyBills,
     };
   }
 }

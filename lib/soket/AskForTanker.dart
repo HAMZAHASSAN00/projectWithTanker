@@ -68,14 +68,7 @@ class _AskForTankerState extends State<AskForTanker> {
             return Text('Error: ${snapshot.error} ');
           } else {
             Map<String, dynamic> userData = snapshot.data!;
-            print('tanker data $userData');
-            userModel = UserModel(
-              name: userData['name'],
-              email: userData['email'],
-            phoneNumber: userData['phoneNumber'],
-              longitude: userData['longitude'],
-              latitude: userData['latitude'],
-            );
+             userModel = UserModel.fromJson(userData);
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -114,7 +107,7 @@ class _AskForTankerState extends State<AskForTanker> {
   void dispose() {
     super.dispose();
     _isMounted = false;
-
+    emails=[];
   }
 
 
